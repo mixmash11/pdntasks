@@ -27,7 +27,7 @@ services:
     build:
       context: .
       dockerfile: ./compose/production/postgres/Dockerfile
-    image: pdntasks_production_postgres
+    image: pdntasks_local_postgres
     container_name: postgres
     volumes:
       - local_postgres_data:/var/lib/postgresql/data:Z
@@ -37,7 +37,7 @@ services:
 
   docs:
     image: pdntasks_local_docs
-    container_name: docs
+    container_name: pdntasks_local_docs
     build:
       context: .
       dockerfile: ./compose/local/docs/Dockerfile
@@ -52,7 +52,7 @@ services:
 
   mailhog:
     image: mailhog/mailhog:v1.0.0
-    container_name: mailhog
+    container_name: pdntasks_local_mailhog
     ports:
       - "8025:8025"
 
@@ -63,7 +63,7 @@ services:
   celeryworker:
     <<: *django
     image: pdntasks_local_celeryworker
-    container_name: celeryworker
+    container_name: pdntasks_local_celeryworker
     depends_on:
       - redis
       - postgres
@@ -74,7 +74,7 @@ services:
   celerybeat:
     <<: *django
     image: pdntasks_local_celerybeat
-    container_name: celerybeat
+    container_name: pdntasks_local_celerybeat
     depends_on:
       - redis
       - postgres
@@ -85,7 +85,7 @@ services:
   flower:
     <<: *django
     image: pdntasks_local_flower
-    container_name: flower
+    container_name: pdntasks_local_flower
     ports:
       - "5555:5555"
     command: /start-flower
