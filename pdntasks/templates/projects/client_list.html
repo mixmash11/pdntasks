@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %}Client List{% endblock %}
+
+{% block content %}
+  <div class="container-fluid">
+    <div class="jumbotron">
+      <h2>Client List</h2>
+    </div>
+    <div class="container border rounded p-4">
+      <div class="table-responsive">
+        <table class="table table-striped table-lg">
+          <thead>
+          <tr>
+            <th scope="col">Abb.</th>
+            <th scope="col">Client Name</th>
+            <th scope="col"></th>
+          </tr>
+          </thead>
+          {% for client in client_list %}
+            <tr>
+              <th scope="row">{{ client.abbreviation }}</th>
+              <td>{{ client.name }}</td>
+              <td>
+                <a href="{% url 'projects:client_detail' client.slug %}" class="btn btn-info"
+                   role="button">View</a>
+              </td>
+            </tr>
+          {% endfor %}
+        </table>
+      </div>
+{#      <div class="border rounded p-2">#}
+{#        <p class="text-center">Need to add a new client?</p>#}
+{#        <p class="text-center">#}
+{#          <a href="{% url 'membership:add' %}" class="btn btn-primary" role="button">Add Client</a>#}
+{#        </p>#}
+{#      </div>#}
+    </div>
+
+  </div>
+
+{% endblock %}

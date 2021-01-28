@@ -15,7 +15,10 @@ urlpatterns = [
     # User management
     path("users/", include("pdntasks.users.urls", namespace="users")),
     path("accounts/", include("allauth.urls")),
-    # Your stuff: custom urls includes go here
+    path(
+        "project_management/",
+        include("pdntasks.projects.urls", namespace="project_management"),
+    ),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 

@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %}Client: Client: {{ client.name }}{% endblock title %}
+
+{% block content %}
+  <div class="container-fluid">
+    <div class="jumbotron">
+      <h2>{{ client.abbreviation }}</h2>
+      <p class="lead">{{ client.name }}</p>
+      <hr class="my-4">
+{#      <a class="btn btn-primary btn-lg" href="{% url 'membership:update' clubmember.membership_number %}"#}
+{#         role="button">Update</a>#}
+    </div>
+    <div class="container border rounded p-4">
+      <h3>Client Data</h3>
+      <hr class="my-4">
+      <div class="table">
+        <table class="table table-striped table-lg">
+          <tbody>
+          <tr>
+            <td>Abbreviation</td>
+            <td>{{ client.abbreviation }}</td>
+          </tr>
+          <tr>
+            <td>Name</td>
+            <td>{{ client.name }}</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="container border rounded p-4">
+      <h3>Client Information</h3>
+      <hr class="my-4">
+      {{ client.info }}
+    </div>
+  </div>
+
+{% endblock content %}

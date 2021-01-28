@@ -18,7 +18,7 @@ class ProjectFactory(factory.django.DjangoModelFactory):
     abbreviation = factory.fuzzy.FuzzyText(length=3)
     info = factory.Faker("paragraphs")
     if factory.Faker("pybool"):
-        client = factory.SubFactory(Client)
+        client = factory.SubFactory(ClientFactory)
     else:
         client = None
 
