@@ -1,8 +1,11 @@
 from django.db import models
+from django.urls import reverse
 from slugify import slugify
 
+from model_utils.models import TimeStampedModel
 
-class Client(models.Model):
+
+class Client(TimeStampedModel):
     name = models.CharField("Client Name", max_length=255, unique=True)
     abbreviation = models.CharField("Abbreviation", max_length=3, unique=True)
     slug = models.SlugField(unique=True)
@@ -16,8 +19,11 @@ class Client(models.Model):
     def __str__(self):
         return f"{self.abbreviation}"
 
+    def get_absolute_url(self):
+        return reverse("project_management:client_detail", kwargs={"slug": self.slug})
 
-class Project(models.Model):
+
+class Project(TimeStampedModel):
     name = models.CharField("Project Name", max_length=255, unique=True)
     abbreviation = models.CharField("Abbreviation", max_length=3, unique=True)
     slug = models.SlugField(unique=True)
@@ -31,3 +37,6 @@ class Project(models.Model):
 
     def __str__(self):
         return f"{self.abbreviation}"
+
+    def get_absolute_url(self):
+        return reverse("project_management:project_detail", kwargs={"slug": self.slug})

@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}Member List{% endblock %}
+
+{% block content %}
+  <div class="container-fluid">
+    <div class="jumbotron">
+      <h2>Task List</h2>
+    </div>
+    <div class="container border rounded p-4">
+      <div class="table-responsive">
+        <table class="table table-striped table-lg">
+          <thead>
+          <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Task</th>
+            <th scope="col"></th>
+          </tr>
+          </thead>
+          {% for task in task_list %}
+            <tr>
+              <th scope="row">
+                {% if not "-" in task.slug %}
+                  {{ task.slug }}-1
+                {% else %}
+                  {{ task.slug }}
+                {% endif %}
+              </th>
+              <td>{{ task.name }}</td>
+              <td>
+                <a href="{% url 'tasks:task_detail' task.slug %}" class="btn btn-info"
+                   role="button">View</a>
+              </td>
+            </tr>
+          {% endfor %}
+        </table>
+      </div>
+      {#      <div class="border rounded p-2">#}
+      {#        <p class="text-center">Need to add a new club member?</p>#}
+      {#        <p class="text-center">#}
+      {#          <a href="{% url 'membership:add' %}" class="btn btn-primary" role="button">Add Member</a>#}
+      {#        </p>#}
+      {#      </div>#}
+    </div>
+
+  </div>
+{% endblock %}

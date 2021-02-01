@@ -3,6 +3,7 @@
 {% block title %}Project: {{ project.name }}{% endblock title %}
 
 {% block content %}
+
   <div class="container-fluid">
     <div class="jumbotron">
       <h2>{{ project.abbreviation }}</h2>
@@ -31,6 +32,14 @@
               <td>{{ project.client }}</td>
             </tr>
           {% endif %}
+          <tr>
+            <td>Created:</td>
+            <td>{{ project.created }}</td>
+          </tr>
+          <tr>
+            <td>Last Edit:</td>
+            <td>{{ project.modified }}</td>
+          </tr>
           </tbody>
         </table>
       </div>

@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="pytest: project_management" type="tests" factoryName="py.test">
+  <configuration default="false" name="pytest: tasks" type="tests" factoryName="py.test">
     <module name="pdntasks" />
     <option name="INTERPRETER_OPTIONS" value="" />
     <option name="PARENT_ENVS" value="true" />
@@ -19,7 +19,7 @@
     <option name="_new_keywords" value="&quot;&quot;" />
     <option name="_new_parameters" value="&quot;&quot;" />
     <option name="_new_additionalArguments" value="&quot;&quot;" />
-    <option name="_new_target" value="&quot;./pdntasks/projects/&quot;" />
+    <option name="_new_target" value="&quot;./pdntasks/tasks/&quot;" />
     <option name="_new_targetType" value="&quot;PATH&quot;" />
     <method v="2" />
   </configuration>

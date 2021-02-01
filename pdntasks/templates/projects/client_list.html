@@ -15,6 +15,7 @@
             <th scope="col">Abb.</th>
             <th scope="col">Client Name</th>
             <th scope="col"></th>
+            <th scope="col"></th>
           </tr>
           </thead>
           {% for client in client_list %}
@@ -25,16 +26,20 @@
                 <a href="{% url 'projects:client_detail' client.slug %}" class="btn btn-info"
                    role="button">View</a>
               </td>
+              <td>
+                <a class="btn btn-primary" href="{% url 'projects:client_update' client.slug %}"
+                   role="button">Update</a>
+              </td>
             </tr>
           {% endfor %}
         </table>
       </div>
-{#      <div class="border rounded p-2">#}
-{#        <p class="text-center">Need to add a new client?</p>#}
-{#        <p class="text-center">#}
-{#          <a href="{% url 'membership:add' %}" class="btn btn-primary" role="button">Add Client</a>#}
-{#        </p>#}
-{#      </div>#}
+      <div class="border rounded p-2">
+        <p class="text-center">Need to add a new client?</p>
+        <p class="text-center">
+          <a href="{% url 'projects:client_add' %}" class="btn btn-primary" role="button">Add Client</a>
+        </p>
+      </div>
     </div>
 
   </div>

@@ -19,6 +19,7 @@ urlpatterns = [
         "project_management/",
         include("pdntasks.projects.urls", namespace="project_management"),
     ),
+    path("tasks/", include("pdntasks.tasks.urls", namespace="tasks")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 

@@ -21,6 +21,11 @@ class TestClient:
         assert client.abbreviation == abbreviation.upper()
         assert str(client) == abbreviation.upper()
 
+    def test_get_absolute_url(self):
+        client = ClientFactory()
+        url = client.get_absolute_url()
+        assert url == f"/project_management/clients/{client.slug}/"
+
 
 class TestProject:
     def test__str__(self):
@@ -36,3 +41,8 @@ class TestProject:
 
         assert project.abbreviation == abbreviation.upper()
         assert str(project) == abbreviation.upper()
+
+    def test_get_absolute_url(self):
+        project = ProjectFactory()
+        url = project.get_absolute_url()
+        assert url == f"/project_management/projects/{project.slug}/"
