@@ -1,15 +1,15 @@
 {% extends "base.html" %}
 {% load crispy_forms_tags %}
 
-{% block title %}{{ view.action|default:"Add" }} Client{% endblock title %}
+{% block title %}{{ view.action|default:"Add" }} Task{% endblock title %}
 
 {% block content %}
   <div class="container-fluid">
     <div class="jumbotron">
-      <h2>{{ view.action|default:"Add" }} Client</h2>
+      <h2>{{ view.action|default:"Add" }} Task</h2>
     </div>
     <div class="container border rounded p-4">
-      <h3>Client Information</h3>
+      <h3>Task Information</h3>
       <a href="https://www.markdownguide.org/basic-syntax">Markdown Style Guide</a>
       <hr class="my-4">
       <form method="post" action=".">

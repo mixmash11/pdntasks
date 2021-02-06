@@ -18,8 +18,8 @@
       </h2>
       <p class="lead">{{ task.name }}</p>
       <hr class="my-4">
-      {#      <a class="btn btn-primary btn-lg" href="{% url 'membership:update' clubmember.membership_number %}"#}
-      {#         role="button">Update</a>#}
+      <a class="btn btn-primary btn-lg" href="{% url 'tasks:task_update' task.slug %}"
+         role="button">Update</a>
     </div>
     <div class="container border rounded p-4">
       <h3>Task Data</h3>
@@ -29,7 +29,7 @@
           <tbody>
           <tr>
             <td><h4>Status</h4></td>
-            <td>{{ task.status|capfirst }}</td>
+            <td><h4>{{ task.status|capfirst }}</h4></td>
           </tr>
           <tr>
             <td>Status Changed:</td>
@@ -52,12 +52,12 @@
           {% if task.assigned_to %}
             <tr>
               <td>Assigned To:</td>
-              <td>{{ task.assigned_to }}</td>
+              <td>{{ task.assigned_to.name }}</td>
             </tr>
           {% endif %}
           <tr>
             <td>Project:</td>
-            <td>{{ task.project }}</td>
+            <td>{{ task.project.name }}</td>
           </tr>
           {% if task.parent_task %}
             <tr>
@@ -72,7 +72,7 @@
     <div class="container border rounded p-4">
       <h3>Task Information</h3>
       <hr class="my-4">
-      {{ task.info }}
+      <div>{{ task.formatted_markdown|safe }}</div>
     </div>
   </div>
 

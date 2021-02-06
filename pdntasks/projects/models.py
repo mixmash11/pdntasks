@@ -1,5 +1,7 @@
 from django.db import models
 from django.urls import reverse
+from markdownx.models import MarkdownxField
+from markdownx.utils import markdownify
 from slugify import slugify
 
 from model_utils.models import TimeStampedModel
@@ -9,7 +11,11 @@ class Client(TimeStampedModel):
     name = models.CharField("Client Name", max_length=255, unique=True)
     abbreviation = models.CharField("Abbreviation", max_length=3, unique=True)
     slug = models.SlugField(unique=True)
-    info = models.TextField("Information")
+    info = MarkdownxField("Information (Markdown)")
+
+    @property
+    def formatted_markdown(self):
+        return markdownify(self.info)
 
     def save(self, *args, **kwargs):
         self.abbreviation = self.abbreviation.upper()
@@ -27,8 +33,12 @@ class Project(TimeStampedModel):
     name = models.CharField("Project Name", max_length=255, unique=True)
     abbreviation = models.CharField("Abbreviation", max_length=3, unique=True)
     slug = models.SlugField(unique=True)
-    info = models.TextField("Information")
+    info = MarkdownxField("Information (Markdown)")
     client = models.ForeignKey(Client, models.SET_NULL, blank=True, null=True)
+
+    @property
+    def formatted_markdown(self):
+        return markdownify(self.info)
 
     def save(self, *args, **kwargs):
         self.abbreviation = self.abbreviation.upper()

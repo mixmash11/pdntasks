@@ -1,9 +1,11 @@
 from django.conf import settings
+from django.conf.urls import url
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
 from django.views import defaults as default_views
 from django.views.generic import TemplateView
+from markdownx import urls as markdownx
 
 urlpatterns = [
     path("", TemplateView.as_view(template_name="pages/home.html"), name="home"),
@@ -20,6 +22,7 @@ urlpatterns = [
         include("pdntasks.projects.urls", namespace="project_management"),
     ),
     path("tasks/", include("pdntasks.tasks.urls", namespace="tasks")),
+    path("markdownx/", include(markdownx)),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 

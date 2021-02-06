@@ -8,8 +8,8 @@
       <h2>{{ client.abbreviation }}</h2>
       <p class="lead">{{ client.name }}</p>
       <hr class="my-4">
-{#      <a class="btn btn-primary btn-lg" href="{% url 'membership:update' clubmember.membership_number %}"#}
-{#         role="button">Update</a>#}
+      <a class="btn btn-primary btn-lg" href="{% url 'projects:client_update' client.slug %}"
+         role="button">Update</a>
     </div>
     <div class="container border rounded p-4">
       <h3>Client Data</h3>
@@ -40,7 +40,7 @@
     <div class="container border rounded p-4">
       <h3>Client Information</h3>
       <hr class="my-4">
-      {{ client.info }}
+      <div>{{ client.formatted_markdown|safe }}</div>
     </div>
   </div>
 

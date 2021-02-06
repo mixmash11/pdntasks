@@ -14,6 +14,9 @@
           <tr>
             <th scope="col">ID</th>
             <th scope="col">Task</th>
+            <th scope="col">Assigned To</th>
+            <th scope="col">Status</th>
+            <th scope="col"></th>
             <th scope="col"></th>
           </tr>
           </thead>
@@ -27,20 +30,26 @@
                 {% endif %}
               </th>
               <td>{{ task.name }}</td>
+              <td>{{ task.assigned_to.name }}</td>
+              <td>{{ task.status|capfirst }}</td>
               <td>
                 <a href="{% url 'tasks:task_detail' task.slug %}" class="btn btn-info"
                    role="button">View</a>
+              </td>
+              <td>
+                <a class="btn btn-primary" href="{% url 'tasks:task_update' task.slug %}"
+                   role="button">Update</a>
               </td>
             </tr>
           {% endfor %}
         </table>
       </div>
-      {#      <div class="border rounded p-2">#}
-      {#        <p class="text-center">Need to add a new club member?</p>#}
-      {#        <p class="text-center">#}
-      {#          <a href="{% url 'membership:add' %}" class="btn btn-primary" role="button">Add Member</a>#}
-      {#        </p>#}
-      {#      </div>#}
+      <div class="border rounded p-2">
+        <p class="text-center">Need to add a new task?</p>
+        <p class="text-center">
+          <a href="{% url 'tasks:task_add' %}" class="btn btn-primary" role="button">Add Task</a>
+        </p>
+      </div>
     </div>
 
   </div>
