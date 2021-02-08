@@ -1,11 +1,17 @@
 {% extends "base.html" %}
 
-{% block title %}Member List{% endblock %}
+{% block title %}Task List{% endblock %}
 
 {% block content %}
   <div class="container-fluid">
     <div class="jumbotron">
       <h2>Task List</h2>
+    </div>
+    <div class="border rounded p-4">
+      <p class="text-center">Need to add a new task?</p>
+      <p class="text-center">
+        <a href="{% url 'tasks:task_add' %}" class="btn btn-primary" role="button">Add Task</a>
+      </p>
     </div>
     <div class="container border rounded p-4">
       <div class="table-responsive">
@@ -43,12 +49,6 @@
             </tr>
           {% endfor %}
         </table>
-      </div>
-      <div class="border rounded p-2">
-        <p class="text-center">Need to add a new task?</p>
-        <p class="text-center">
-          <a href="{% url 'tasks:task_add' %}" class="btn btn-primary" role="button">Add Task</a>
-        </p>
       </div>
     </div>
 

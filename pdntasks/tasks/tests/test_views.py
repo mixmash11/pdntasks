@@ -2,7 +2,7 @@ import pytest
 from pytest_django.asserts import assertContains
 from slugify import slugify
 
-from .factories import TaskFactory
+from .factories import TaskFactory, NoteFactory
 from ..models import Task
 from ..views import TaskListView, TaskDetailView
 
@@ -59,6 +59,17 @@ class TestTask:
         callable_obj = TaskDetailView.as_view()
         response = callable_obj(request, slug=task.slug)
         assertContains(response, task.name)
+
+    def test_task_detail_view_contains_notes(self, user, rf, task):
+        test_text = "Some text"
+        note = NoteFactory(task=task, text=test_text)
+
+        url = reverse("tasks:task_detail", kwargs={"slug": task.slug})
+        request = rf.get(url)
+        request.user = user
+        callable_obj = TaskDetailView.as_view()
+        response = callable_obj(request, slug=task.slug)
+        assertContains(response, test_text)
 
     def test_get_absolute_url(self):
         task = TaskFactory()

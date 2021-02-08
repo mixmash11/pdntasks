@@ -11,4 +11,14 @@ urlpatterns = [
         name="task_update",
     ),
     path(route="<slug:slug>/", view=views.TaskDetailView.as_view(), name="task_detail"),
+    path(
+        route="<slug:task_slug>/add_note/",
+        view=views.NoteCreateView.as_view(),
+        name="note_add",
+    ),
+    path(
+        route="notes/<slug:slug>/update/",
+        view=views.NoteUpdateView.as_view(),
+        name="note_update",
+    ),
 ]

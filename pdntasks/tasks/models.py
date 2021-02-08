@@ -32,9 +32,19 @@ class Task(StatusModel):
         return reverse("tasks:task_detail", kwargs={"slug": self.slug})
 
 
-# class Note(TimeStampedModel):
-#     task = models.ForeignKey(Task, on_delete=models.CASCADE)
-#     text = models.TextField("Note")
-#     user = assigned_to = models.ForeignKey(
-#         "users.User", models.SET_NULL, blank=True, null=True
-#     )
+class Note(TimeStampedModel):
+
+    task = models.ForeignKey(Task, on_delete=models.CASCADE)
+    text = MarkdownxField("Text (Markdown)")
+    user = models.ForeignKey("users.User", models.SET_NULL, blank=True, null=True)
+    slug = AutoSlugField(populate_from="task", sep="-", unique=True)
+
+    @property
+    def formatted_markdown(self):
+        return markdownify(self.text)
+
+    def __str__(self):
+        return f"{self.slug}"
+
+    def get_absolute_url(self):
+        return reverse("tasks:task_detail", kwargs={"slug": self.task.slug})

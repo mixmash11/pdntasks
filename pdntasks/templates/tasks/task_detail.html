@@ -20,6 +20,7 @@
       <hr class="my-4">
       <a class="btn btn-primary btn-lg" href="{% url 'tasks:task_update' task.slug %}"
          role="button">Update</a>
+      <a href="{% url 'tasks:note_add' task.slug %}" class="btn btn-secondary btn-lg">Add Note</a>
     </div>
     <div class="container border rounded p-4">
       <h3>Task Data</h3>
@@ -74,6 +75,30 @@
       <hr class="my-4">
       <div>{{ task.formatted_markdown|safe }}</div>
     </div>
+    <div class="container border rounded p-4">
+      <h3>Notes</h3>
+      {% for note in notes %}
+        <div class="card p-4">
+          <div class="card-body">
+            {{ note.formatted_markdown|safe }}
+          </div>
+          <div class="card-footer text-muted">
+            {{ note.user.name }} on {{ note.created }}
+            {% if note.created != note.modified %}
+              Updated on {{ note.modified }}
+            {% endif %}
+            {% if request.user == note.user %}
+              <br>
+              <a href="{% url 'tasks:note_update' note.slug %}" class="btn btn-secondary">Update Note</a>
+            {% endif %}
+          </div>
+        </div>
+      {% empty %}
+        No Notes
+      {% endfor %}
+    </div>
+
   </div>
+
 
 {% endblock content %}
