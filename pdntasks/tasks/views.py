@@ -10,6 +10,47 @@ class TaskListView(LoginRequiredMixin, ListView):
     ordering = ["-status_changed"]
 
 
+class UserTaskListView(LoginRequiredMixin, ListView):
+    model = Task
+    ordering = ["-status_changed"]
+
+    def get_queryset(self):
+        return Task.objects.filter(
+            assigned_to=self.request.user,
+            status__in=["open", "waiting", "active", "paused"],
+        )
+
+    filter = "My"
+
+
+class UnassignedTaskListView(LoginRequiredMixin, ListView):
+    queryset = Task.objects.filter(assigned_to__isnull=True)
+    ordering = ["-status_changed"]
+    template_name = "tasks/task_list.html"
+    filter = "Unassigned"
+
+
+class WaitingTaskListView(LoginRequiredMixin, ListView):
+    queryset = Task.objects.filter(status="waiting")
+    ordering = ["-status_changed"]
+    template_name = "tasks/task_list.html"
+    filter = "Waiting on Response"
+
+
+class InactiveTaskListView(LoginRequiredMixin, ListView):
+    queryset = Task.objects.filter(status="inactive")
+    ordering = ["-status_changed"]
+    template_name = "tasks/task_list.html"
+    filter = "Inactive"
+
+
+class CompletedTaskListView(LoginRequiredMixin, ListView):
+    queryset = Task.objects.filter(status="complete")
+    ordering = ["-status_changed"]
+    template_name = "tasks/task_list.html"
+    filter = "Completed"
+
+
 class TaskDetailView(LoginRequiredMixin, DetailView):
     model = Task
 

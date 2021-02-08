@@ -1,11 +1,11 @@
 {% extends "base.html" %}
 
-{% block title %}Task List{% endblock %}
+{% block title %}{{ view.filter }} Task List{% endblock %}
 
 {% block content %}
   <div class="container-fluid">
     <div class="jumbotron">
-      <h2>Task List</h2>
+      <h2>{{ view.filter }} Task List</h2>
     </div>
     <div class="border rounded p-4">
       <p class="text-center">Need to add a new task?</p>

@@ -4,6 +4,26 @@ from . import views
 app_name = "tasks"
 urlpatterns = [
     path(route="", view=views.TaskListView.as_view(), name="task_list"),
+    path(
+        route="unassigned/",
+        view=views.UnassignedTaskListView.as_view(),
+        name="unassigned_task_list",
+    ),
+    path(
+        route="waiting/",
+        view=views.WaitingTaskListView.as_view(),
+        name="waiting_task_list",
+    ),
+    path(
+        route="inactive/",
+        view=views.InactiveTaskListView.as_view(),
+        name="inactive_task_list",
+    ),
+    path(
+        route="completed/",
+        view=views.CompletedTaskListView.as_view(),
+        name="complete_task_list",
+    ),
     path(route="add/", view=views.TaskCreateView.as_view(), name="task_add"),
     path(
         route="<slug:slug>/update/",
