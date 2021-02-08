@@ -47,22 +47,22 @@ services:
   redis:
     image: redis:5.0
 
-  celeryworker:
-    <<: *django
-    image: pdntasks_production_celeryworker
-    command: /start-celeryworker
+#  celeryworker:
+#    <<: *django
+#    image: pdntasks_production_celeryworker
+#    command: /start-celeryworker
+#
+#  celerybeat:
+#    <<: *django
+#    image: pdntasks_production_celerybeat
+#    command: /start-celerybeat
+#
+#  flower:
+#    <<: *django
+#    image: pdntasks_production_flower
+#    command: /start-flower
 
-  celerybeat:
-    <<: *django
-    image: pdntasks_production_celerybeat
-    command: /start-celerybeat
 
-  flower:
-    <<: *django
-    image: pdntasks_production_flower
-    command: /start-flower
-
-  
   awscli:
     build:
       context: .
