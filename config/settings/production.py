@@ -122,12 +122,12 @@ INSTALLED_APPS += ["anymail"]  # noqa F405
 # https://anymail.readthedocs.io/en/stable/installation/#anymail-settings-reference
 # https://anymail.readthedocs.io/en/stable/esps
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-EMAIL_HOST = None
-EMAIL_PORT = None
-EMAIL_HOST_USER = None
-EMAIL_HOST_PASSWORD = None
-EMAIL_USE_SSL = None
-EMAIL_TIMEOUT = None
+EMAIL_HOST = env("EMAIL_HOST")
+EMAIL_PORT = int(env("EMAIL_PORT"))
+EMAIL_HOST_USER = env("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD")
+EMAIL_USE_SSL = bool(env("EMAIL_USE_SSL"))
+EMAIL_TIMEOUT = env("EMAIL_TIMEOUT")
 ANYMAIL = {}
 
 
