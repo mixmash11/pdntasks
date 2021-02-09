@@ -26,8 +26,8 @@ certificatesResolvers:
 http:
   routers:
     web-router:
-      rule: "Host(`pdntasks.info`) || Host(`www.pdntasks.info`)"
-      
+      rule: "Host(`pdntasks.de`) || Host(`www.pdntasks.de`)"
+
       entryPoints:
         - web
       middlewares:
@@ -36,8 +36,8 @@ http:
       service: django
 
     web-secure-router:
-      rule: "Host(`pdntasks.info`) || Host(`www.pdntasks.info`)"
-      
+      rule: "Host(`pdntasks.de`) || Host(`www.pdntasks.de`)"
+
       entryPoints:
         - web-secure
       middlewares:
@@ -48,7 +48,7 @@ http:
         certResolver: letsencrypt
 
     flower-secure-router:
-      rule: "Host(`pdntasks.info`)"
+      rule: "Host(`pdntasks.de`)"
       entryPoints:
         - flower
       service: flower
