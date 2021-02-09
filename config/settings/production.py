@@ -102,7 +102,7 @@ TEMPLATES[-1]["OPTIONS"]["loaders"] = [  # type: ignore[index] # noqa F405
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#default-from-email
 DEFAULT_FROM_EMAIL = env(
-    "DJANGO_DEFAULT_FROM_EMAIL", default="PanDaNieceTasks <noreply@pdntasks.de>"
+    "DJANGO_DEFAULT_FROM_EMAIL", default="PanDaNieceTasks <info@pdntasks.de>"
 )
 # https://docs.djangoproject.com/en/dev/ref/settings/#server-email
 SERVER_EMAIL = env("DJANGO_SERVER_EMAIL", default=DEFAULT_FROM_EMAIL)
@@ -127,7 +127,7 @@ EMAIL_PORT = int(env("EMAIL_PORT"))
 EMAIL_HOST_USER = env("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD")
 EMAIL_USE_SSL = bool(env("EMAIL_USE_SSL"))
-EMAIL_TIMEOUT = env("EMAIL_TIMEOUT")
+EMAIL_TIMEOUT = int(env("EMAIL_TIMEOUT"))
 ANYMAIL = {}
 
 
