@@ -40,5 +40,5 @@ class ProjectCreateView(LoginRequiredMixin, CreateView):
 
 class ProjectUpdateView(LoginRequiredMixin, UpdateView):
     model = Project
-    fields = ["name", "abbreviation", "info"]
+    fields = ["name", "abbreviation", "info", "client"]
     action = "Update"
