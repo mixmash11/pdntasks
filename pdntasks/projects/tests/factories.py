@@ -21,6 +21,7 @@ class ProjectFactory(factory.django.DjangoModelFactory):
         client = factory.SubFactory(ClientFactory)
     else:
         client = None
+    parent_project = None
 
     class Meta:
         model = Project

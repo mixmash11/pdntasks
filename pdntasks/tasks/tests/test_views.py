@@ -93,7 +93,6 @@ class TestTask:
             "name": "Do the Thing",
             "status": "open",
             "assigned_to": "",
-            "parent_task": "",
             "info": "Make the stuff",
             "project": project.pk,
         }
@@ -118,7 +117,6 @@ class TestTask:
             "name": test_name,
             "status": task.status,
             "assigned_to": "",
-            "parent_task": "",
             "info": task.info,
             "project": task.project.pk,
         }

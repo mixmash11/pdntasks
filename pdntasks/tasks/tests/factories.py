@@ -12,7 +12,6 @@ class TaskFactory(factory.django.DjangoModelFactory):
     info = factory.Faker("paragraphs")
     assigned_to = factory.SubFactory(UserFactory)
     project = factory.SubFactory(ProjectFactory)
-    parent_task = None
 
     class Meta:
         model = Task

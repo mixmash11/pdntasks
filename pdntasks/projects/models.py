@@ -11,7 +11,7 @@ class Client(TimeStampedModel):
     name = models.CharField("Client Name", max_length=255, unique=True)
     abbreviation = models.CharField("Abbreviation", max_length=3, unique=True)
     slug = models.SlugField(unique=True)
-    info = MarkdownxField("Information (Markdown)")
+    info = MarkdownxField("Information (Markdown)", blank=True)
 
     @property
     def formatted_markdown(self):
@@ -33,8 +33,11 @@ class Project(TimeStampedModel):
     name = models.CharField("Project Name", max_length=255, unique=True)
     abbreviation = models.CharField("Abbreviation", max_length=3, unique=True)
     slug = models.SlugField(unique=True)
-    info = MarkdownxField("Information (Markdown)")
+    info = MarkdownxField("Information (Markdown)", blank=True)
     client = models.ForeignKey(Client, models.SET_NULL, blank=True, null=True)
+    parent_project = models.ForeignKey(
+        "self", on_delete=models.CASCADE, blank=True, null=True
+    )
 
     @property
     def formatted_markdown(self):

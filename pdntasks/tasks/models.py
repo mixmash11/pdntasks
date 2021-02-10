@@ -16,9 +16,6 @@ class Task(StatusModel):
         "users.User", models.SET_NULL, blank=True, null=True
     )
     project = models.ForeignKey("projects.Project", on_delete=models.CASCADE)
-    parent_task = models.ForeignKey(
-        "self", on_delete=models.CASCADE, blank=True, null=True
-    )
     slug = AutoSlugField(populate_from="project", sep="-", unique=True)
 
     @property

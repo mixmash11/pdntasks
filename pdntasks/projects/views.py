@@ -2,6 +2,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView, DetailView, CreateView, UpdateView
 
 from .models import Client, Project
+from ..tasks.models import Task
 
 
 class ClientListView(LoginRequiredMixin, ListView):
@@ -32,13 +33,20 @@ class ProjectListView(LoginRequiredMixin, ListView):
 class ProjectDetailView(LoginRequiredMixin, DetailView):
     model = Project
 
+    def get_context_data(self, **kwargs):
+        context = super(ProjectDetailView, self).get_context_data(**kwargs)
+        context["tasks"] = Task.objects.filter(project=context["project"]).order_by(
+            "-status_changed"
+        )
+        return context
+
 
 class ProjectCreateView(LoginRequiredMixin, CreateView):
     model = Project
-    fields = ["name", "abbreviation", "info", "client"]
+    fields = ["name", "abbreviation", "info", "client", "parent_project"]
 
 
 class ProjectUpdateView(LoginRequiredMixin, UpdateView):
     model = Project
-    fields = ["name", "abbreviation", "info", "client"]
+    fields = ["name", "abbreviation", "info", "client", "parent_project"]
     action = "Update"

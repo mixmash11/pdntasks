@@ -12,41 +12,36 @@ class TaskListView(LoginRequiredMixin, ListView):
 
 class UserTaskListView(LoginRequiredMixin, ListView):
     model = Task
-    ordering = ["-status_changed"]
 
     def get_queryset(self):
         return Task.objects.filter(
             assigned_to=self.request.user,
             status__in=["open", "waiting", "active", "paused"],
-        )
+        ).order_by("-status_changed")
 
     filter = "My"
 
 
 class UnassignedTaskListView(LoginRequiredMixin, ListView):
-    queryset = Task.objects.filter(assigned_to__isnull=True)
-    ordering = ["-status_changed"]
+    queryset = Task.objects.filter(assigned_to__isnull=True).order_by("-status_changed")
     template_name = "tasks/task_list.html"
     filter = "Unassigned"
 
 
 class WaitingTaskListView(LoginRequiredMixin, ListView):
-    queryset = Task.objects.filter(status="waiting")
-    ordering = ["-status_changed"]
+    queryset = Task.objects.filter(status="waiting").order_by("-status_changed")
     template_name = "tasks/task_list.html"
     filter = "Waiting on Response"
 
 
 class InactiveTaskListView(LoginRequiredMixin, ListView):
-    queryset = Task.objects.filter(status="inactive")
-    ordering = ["-status_changed"]
+    queryset = Task.objects.filter(status="inactive").order_by("-status_changed")
     template_name = "tasks/task_list.html"
     filter = "Inactive"
 
 
 class CompletedTaskListView(LoginRequiredMixin, ListView):
-    queryset = Task.objects.filter(status="complete")
-    ordering = ["-status_changed"]
+    queryset = Task.objects.filter(status="complete").order_by("-status_changed")
     template_name = "tasks/task_list.html"
     filter = "Completed"
 
@@ -62,12 +57,12 @@ class TaskDetailView(LoginRequiredMixin, DetailView):
 
 class TaskCreateView(LoginRequiredMixin, CreateView):
     model = Task
-    fields = ["name", "status", "assigned_to", "project", "parent_task", "info"]
+    fields = ["name", "status", "assigned_to", "project", "info"]
 
 
 class TaskUpdateView(LoginRequiredMixin, UpdateView):
     model = Task
-    fields = ["name", "status", "assigned_to", "project", "parent_task", "info"]
+    fields = ["name", "status", "assigned_to", "project", "info"]
     action = "Update"
 
 
