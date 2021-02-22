@@ -25,7 +25,9 @@
           </thead>
           {% for project in project_list %}
             <tr>
-              <th scope="row">{{ project.abbreviation }}</th>
+              <th scope="row">
+                <a href="{% url 'projects:project_detail' project.slug %}">{{ project.abbreviation }}</a>
+              </th>
               <td>{{ project.name }}</td>
               <td>{{ project.client }}</td>
               <td>

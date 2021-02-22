@@ -7,11 +7,11 @@
     <h1 class="display-4">{{ view.filter }} Task List</h1>
     <div class="container border rounded p-4">
       <div class="border rounded p-4">
-      <p class="text-center">Need to add a new task?</p>
-      <p class="text-center">
-        <a href="{% url 'tasks:task_add' %}" class="btn btn-primary" role="button">Add Task</a>
-      </p>
-    </div>
+        <p class="text-center">Need to add a new task?</p>
+        <p class="text-center">
+          <a href="{% url 'tasks:task_add' %}" class="btn btn-primary" role="button">Add Task</a>
+        </p>
+      </div>
       <div class="table-responsive">
         <table class="table table-striped table-lg">
           <thead>
@@ -27,11 +27,13 @@
           {% for task in task_list %}
             <tr>
               <th scope="row">
-                {% if not "-" in task.slug %}
-                  {{ task.slug }}-1
-                {% else %}
-                  {{ task.slug }}
-                {% endif %}
+                <a href="{% url 'tasks:task_detail' task.slug %}">
+                  {% if not "-" in task.slug %}
+                    {{ task.slug }}-1
+                  {% else %}
+                    {{ task.slug }}
+                  {% endif %}
+                </a>
               </th>
               <td>{{ task.name }}</td>
               <td>{{ task.assigned_to.name }}</td>
