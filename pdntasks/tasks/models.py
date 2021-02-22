@@ -17,6 +17,7 @@ class Task(StatusModel):
     )
     project = models.ForeignKey("projects.Project", on_delete=models.CASCADE)
     slug = AutoSlugField(populate_from="project", sep="-", unique=True)
+    date_due = models.DateField("Date Due", blank=True, null=True)
 
     @property
     def formatted_markdown(self):

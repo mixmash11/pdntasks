@@ -50,6 +50,12 @@
             <td>Name</td>
             <td>{{ task.name }}</td>
           </tr>
+          {% if task.date_due %}
+            <tr>
+              <td>Date Due:</td>
+              <td>{{ task.date_due }}</td>
+            </tr>
+          {% endif %}
           {% if task.assigned_to %}
             <tr>
               <td>Assigned To:</td>

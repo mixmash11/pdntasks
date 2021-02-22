@@ -63,7 +63,7 @@ class TaskDetailView(LoginRequiredMixin, DetailView):
 
 class TaskCreateView(LoginRequiredMixin, CreateView):
     model = Task
-    fields = ["name", "status", "assigned_to", "project", "info"]
+    fields = ["name", "status", "date_due", "assigned_to", "project", "info"]
 
     def form_valid(self, form):
         response = super().form_valid(form)
@@ -92,7 +92,7 @@ class TaskCreateView(LoginRequiredMixin, CreateView):
 
 class TaskUpdateView(LoginRequiredMixin, UpdateView):
     model = Task
-    fields = ["name", "status", "assigned_to", "project", "info"]
+    fields = ["name", "status", "assigned_to", "date_due", "project", "info"]
     action = "Update"
 
     def form_valid(self, form):
