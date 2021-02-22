@@ -1,7 +1,13 @@
+from django.contrib.sites.shortcuts import get_current_site
+
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404
 from django.views.generic import ListView, DetailView, CreateView, UpdateView
 
+from .celery_tasks import (
+    send_task_status_notification_email_to_all,
+    send_task_status_notification_email_to_assigned_user,
+)
 from .models import Task, Note
 
 
@@ -59,16 +65,68 @@ class TaskCreateView(LoginRequiredMixin, CreateView):
     model = Task
     fields = ["name", "status", "assigned_to", "project", "info"]
 
+    def form_valid(self, form):
+        response = super().form_valid(form)
+
+        task = self.object
+
+        if task.assigned_to != self.request.user:
+            site_name = get_current_site(self.request).name
+
+            if not task.assigned_to:
+                subject = f"New Unassigned Task: {task.slug}"
+                message = f"Task {task.slug} was created without being assigned."
+                send_task_status_notification_email_to_all.delay(
+                    task.pk, subject, message, str(self.request.user), site_name
+                )
+                return response
+
+            subject = f"New Task assigned: {task.slug}"
+            message = f"Task {task.slug} was created and assigned to you."
+            send_task_status_notification_email_to_assigned_user.delay(
+                task.pk, subject, message, str(self.request.user), site_name
+            )
+
+        return response
+
 
 class TaskUpdateView(LoginRequiredMixin, UpdateView):
     model = Task
     fields = ["name", "status", "assigned_to", "project", "info"]
     action = "Update"
 
+    def form_valid(self, form):
+        response = super().form_valid(form)
+
+        task = self.object
+
+        if task.assigned_to != self.request.user:
+            site_name = get_current_site(self.request).name
+
+            if not task.assigned_to:
+                subject = f"Unassigned Task Updated: {task.slug}"
+                message = f"The unassigned Task {task.slug} was updated."
+                send_task_status_notification_email_to_all.delay(
+                    task.pk, subject, message, str(self.request.user), site_name
+                )
+                return response
+
+            subject = f"Task updated: {task.slug}"
+            message = f"Task {task.slug} was updated."
+            send_task_status_notification_email_to_assigned_user.delay(
+                task.pk, subject, message, str(self.request.user), site_name
+            )
+
+        return response
+
 
 class NoteCreateView(LoginRequiredMixin, CreateView):
     model = Note
     fields = ["text"]
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.task = None
 
     def dispatch(self, request, *args, **kwargs):
         self.task = get_object_or_404(Task, slug=kwargs["task_slug"])
@@ -77,10 +135,55 @@ class NoteCreateView(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         form.instance.user = self.request.user
         form.instance.task = self.task
-        return super().form_valid(form)
+        response = super().form_valid(form)
+
+        task = self.task
+
+        if task.assigned_to != self.request.user:
+            site_name = get_current_site(self.request).name
+
+            if not task.assigned_to:
+                subject = f"New Note for Unassigned Task: {task.slug}"
+                message = f"The unassigned Task {task.slug} has a new note."
+                send_task_status_notification_email_to_all.delay(
+                    task.pk, subject, message, str(self.request.user), site_name
+                )
+                return response
+
+            subject = f"New Note for Task: {task.slug}"
+            message = f"The Task {task.slug} has a new note."
+            send_task_status_notification_email_to_assigned_user.delay(
+                task.pk, subject, message, str(self.request.user), site_name
+            )
+
+        return response
 
 
 class NoteUpdateView(LoginRequiredMixin, UpdateView):
     model = Note
     fields = ["text"]
     action = "Update"
+
+    def form_valid(self, form):
+        response = super().form_valid(form)
+
+        task = form.instance.task
+
+        if task.assigned_to != self.request.user:
+            site_name = get_current_site(self.request).name
+
+            if not task.assigned_to:
+                subject = f"Note updated for Unassigned Task: {task.slug}"
+                message = f"The unassigned Task {task.slug} has an updated note."
+                send_task_status_notification_email_to_all.delay(
+                    task.pk, subject, message, str(self.request.user), site_name
+                )
+                return response
+
+            subject = f"Updated Note for Task: {task.slug}"
+            message = f"The Task {task.slug} has an updated note."
+            send_task_status_notification_email_to_assigned_user.delay(
+                task.pk, subject, message, str(self.request.user), site_name
+            )
+
+        return response

@@ -14,6 +14,8 @@ services:
     depends_on:
       - postgres
       - mailhog
+      - celerybeat
+      - flower
     volumes:
       - .:/app:z
     env_file:
@@ -76,6 +78,7 @@ services:
     image: pdntasks_local_celerybeat
     container_name: pdntasks_local_celerybeat
     depends_on:
+      - celeryworker
       - redis
       - postgres
       - mailhog
@@ -86,6 +89,8 @@ services:
     <<: *django
     image: pdntasks_local_flower
     container_name: pdntasks_local_flower
+    depends_on:
+      - celerybeat
     ports:
       - "5555:5555"
     command: /start-flower

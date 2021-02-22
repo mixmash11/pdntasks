@@ -1,0 +1,10 @@
+Hello from {{ site_name }}!
+
+You're receiving this e-mail because {{ user_name }} made a change to task {{ task_abb }}:
+
+{{ change_message }}
+
+You can view the task at {{ task_url }}
+
+Thank you for using {{ site_name }}!
+{{ site_domain }}
