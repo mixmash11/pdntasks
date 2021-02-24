@@ -49,7 +49,7 @@ class Project(TimeStampedModel):
         super(Project, self).save(*args, **kwargs)
 
     def __str__(self):
-        return f"{self.name}"
+        return f"{self.slug}"
 
     def get_absolute_url(self):
         return reverse("project_management:project_detail", kwargs={"slug": self.slug})

@@ -29,11 +29,11 @@ class TestClient:
 
 class TestProject:
     def test__str__(self):
-        name = "test name"
-        project = ProjectFactory(name=name)
+        abbreviation = "abc"
+        project = ProjectFactory(abbreviation=abbreviation)
 
-        assert project.__str__() == name
-        assert str(project) == name
+        assert project.__str__() == abbreviation
+        assert str(project) == abbreviation
 
     def test_abbreviation_caps(self):
         abbreviation = "abc"
