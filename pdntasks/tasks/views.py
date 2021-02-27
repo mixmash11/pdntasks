@@ -20,7 +20,7 @@ from .models import Task, Note
 
 class TaskListView(LoginRequiredMixin, ListView):
     model = Task
-    ordering = ["date_due"]
+    ordering = ["date_due", "-status_changed"]
 
 
 class UserTaskListView(LoginRequiredMixin, ListView):
@@ -30,31 +30,39 @@ class UserTaskListView(LoginRequiredMixin, ListView):
         return Task.objects.filter(
             assigned_to=self.request.user,
             status__in=["open", "waiting", "active", "paused"],
-        ).order_by("date_due")
+        ).order_by("date_due", "-status_changed")
 
     filter = "My"
 
 
 class UnassignedTaskListView(LoginRequiredMixin, ListView):
-    queryset = Task.objects.filter(assigned_to__isnull=True).order_by("date_due")
+    queryset = Task.objects.filter(assigned_to__isnull=True).order_by(
+        "date_due", "-status_changed"
+    )
     template_name = "tasks/task_list.html"
     filter = "Unassigned"
 
 
 class WaitingTaskListView(LoginRequiredMixin, ListView):
-    queryset = Task.objects.filter(status="waiting").order_by("date_due")
+    queryset = Task.objects.filter(status="waiting").order_by(
+        "date_due", "-status_changed"
+    )
     template_name = "tasks/task_list.html"
     filter = "Waiting on Response"
 
 
 class InactiveTaskListView(LoginRequiredMixin, ListView):
-    queryset = Task.objects.filter(status="inactive").order_by("date_due")
+    queryset = Task.objects.filter(status="inactive").order_by(
+        "date_due", "-status_changed"
+    )
     template_name = "tasks/task_list.html"
     filter = "Inactive"
 
 
 class CompletedTaskListView(LoginRequiredMixin, ListView):
-    queryset = Task.objects.filter(status="complete").order_by("date_due")
+    queryset = Task.objects.filter(status="complete").order_by(
+        "date_due", "-status_changed"
+    )
     template_name = "tasks/task_list.html"
     filter = "Completed"
 
