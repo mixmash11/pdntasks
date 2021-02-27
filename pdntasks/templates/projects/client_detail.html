@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Client: Client: {{ client.name }}{% endblock title %}
+{% block title %}Client: {{ client.name }}{% endblock title %}
 
 {% block content %}
   <div class="container-fluid">
@@ -8,7 +8,7 @@
       <h2>{{ client.abbreviation }}</h2>
       <p class="lead">{{ client.name }}</p>
       <hr class="my-4">
-      <a class="btn btn-primary btn-lg" href="{% url 'projects:client_update' client.slug %}"
+      <a class="btn btn-primary btn-lg" href="{% url "projects:client_update" client.slug %}"
          role="button">Update</a>
     </div>
     <div class="container border rounded p-4">
@@ -42,6 +42,21 @@
       <hr class="my-4">
       <div>{{ client.formatted_markdown|safe }}</div>
     </div>
+    <div class="container border rounded p-4">
+      <h3>Projects</h3>
+      {% for project in projects %}
+        <div class="card p-4">
+          <div class="card-body">
+            <h5 class="card-title">{{ project.slug }}</h5>
+            <p class="card-text">{{ project.name }}</p>
+            <a href="{% url "projects:project_detail" project.slug %}" class="card-link">View</a>
+          </div>
+        </div>
+      {% empty %}
+        No Projects
+      {% endfor %}
+    </div>
   </div>
+
 
 {% endblock content %}

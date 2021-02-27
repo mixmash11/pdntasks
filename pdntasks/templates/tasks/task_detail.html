@@ -20,6 +20,8 @@
       <hr class="my-4">
       <a class="btn btn-primary btn-lg" href="{% url 'tasks:task_update' task.slug %}"
          role="button">Update</a>
+      <a class="btn btn-danger btn-lg" href="{% url 'tasks:task_delete' task.slug %}"
+         role="button">Delete</a>
       <a href="{% url 'tasks:note_add' task.slug %}" class="btn btn-secondary btn-lg">Add Note</a>
     </div>
     <div class="container border rounded p-4">

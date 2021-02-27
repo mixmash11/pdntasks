@@ -36,7 +36,8 @@
           {% if project.client %}
             <tr>
               <td>Client</td>
-              <td>{{ project.client }}</td>
+              <td><a href="{% url "projects:client_detail" project.client.slug %}">
+                {{ project.client }}</a></td>
             </tr>
           {% endif %}
           <tr>
@@ -55,6 +56,20 @@
       <h3>Project Information</h3>
       <hr class="my-4">
       <div>{{ project.formatted_markdown|safe }}</div>
+    </div>
+    <div class="container border rounded p-4">
+      <h3>Sub-Projects</h3>
+      {% for subproject in subprojects %}
+        <div class="card p-4">
+          <div class="card-body">
+            <h5 class="card-title">{{ subproject.slug }}</h5>
+            <p class="card-text">{{ subproject.name }}</p>
+            <a href="{% url "projects:project_detail" subproject.slug %}" class="card-link">View</a>
+          </div>
+        </div>
+      {% empty %}
+        No Subprojects
+      {% endfor %}
     </div>
     <div class="container border rounded p-4">
       <h3>Tasks</h3>

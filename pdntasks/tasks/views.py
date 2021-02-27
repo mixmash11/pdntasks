@@ -2,7 +2,14 @@ from django.contrib.sites.shortcuts import get_current_site
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404
-from django.views.generic import ListView, DetailView, CreateView, UpdateView
+from django.urls import reverse_lazy
+from django.views.generic import (
+    ListView,
+    DetailView,
+    CreateView,
+    UpdateView,
+    DeleteView,
+)
 
 from .celery_tasks import (
     send_task_status_notification_email_to_all,
@@ -13,7 +20,7 @@ from .models import Task, Note
 
 class TaskListView(LoginRequiredMixin, ListView):
     model = Task
-    ordering = ["-status_changed"]
+    ordering = ["date_due"]
 
 
 class UserTaskListView(LoginRequiredMixin, ListView):
@@ -23,31 +30,31 @@ class UserTaskListView(LoginRequiredMixin, ListView):
         return Task.objects.filter(
             assigned_to=self.request.user,
             status__in=["open", "waiting", "active", "paused"],
-        ).order_by("-status_changed")
+        ).order_by("date_due")
 
     filter = "My"
 
 
 class UnassignedTaskListView(LoginRequiredMixin, ListView):
-    queryset = Task.objects.filter(assigned_to__isnull=True).order_by("-status_changed")
+    queryset = Task.objects.filter(assigned_to__isnull=True).order_by("date_due")
     template_name = "tasks/task_list.html"
     filter = "Unassigned"
 
 
 class WaitingTaskListView(LoginRequiredMixin, ListView):
-    queryset = Task.objects.filter(status="waiting").order_by("-status_changed")
+    queryset = Task.objects.filter(status="waiting").order_by("date_due")
     template_name = "tasks/task_list.html"
     filter = "Waiting on Response"
 
 
 class InactiveTaskListView(LoginRequiredMixin, ListView):
-    queryset = Task.objects.filter(status="inactive").order_by("-status_changed")
+    queryset = Task.objects.filter(status="inactive").order_by("date_due")
     template_name = "tasks/task_list.html"
     filter = "Inactive"
 
 
 class CompletedTaskListView(LoginRequiredMixin, ListView):
-    queryset = Task.objects.filter(status="complete").order_by("-status_changed")
+    queryset = Task.objects.filter(status="complete").order_by("date_due")
     template_name = "tasks/task_list.html"
     filter = "Completed"
 
@@ -118,6 +125,11 @@ class TaskUpdateView(LoginRequiredMixin, UpdateView):
             )
 
         return response
+
+
+class TaskDeleteView(LoginRequiredMixin, DeleteView):
+    model = Task
+    success_url = reverse_lazy("home")
 
 
 class NoteCreateView(LoginRequiredMixin, CreateView):

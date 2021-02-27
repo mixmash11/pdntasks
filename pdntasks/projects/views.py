@@ -13,6 +13,11 @@ class ClientListView(LoginRequiredMixin, ListView):
 class ClientDetailView(LoginRequiredMixin, DetailView):
     model = Client
 
+    def get_context_data(self, **kwargs):
+        context = super(ClientDetailView, self).get_context_data(**kwargs)
+        context["projects"] = Project.objects.filter(client=context["client"])
+        return context
+
 
 class ClientCreateView(LoginRequiredMixin, CreateView):
     model = Client
@@ -35,6 +40,9 @@ class ProjectDetailView(LoginRequiredMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(ProjectDetailView, self).get_context_data(**kwargs)
+        context["subprojects"] = Project.objects.filter(
+            parent_project=context["project"]
+        )
         context["tasks"] = Task.objects.filter(project=context["project"]).order_by(
             "-status_changed"
         )

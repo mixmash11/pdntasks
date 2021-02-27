@@ -18,6 +18,7 @@
           <tr>
             <th scope="col">ID</th>
             <th scope="col">Task</th>
+            <th scope="col">Due</th>
             <th scope="col">Assigned To</th>
             <th scope="col">Status</th>
             <th scope="col"></th>
@@ -36,6 +37,11 @@
                 </a>
               </th>
               <td>{{ task.name }}</td>
+              <td>
+                {% if task.date_due %}
+                  {{ task.date_due }}
+                {% endif %}
+              </td>
               <td>{{ task.assigned_to.name }}</td>
               <td>{{ task.status|capfirst }}</td>
               <td>
