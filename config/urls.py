@@ -23,6 +23,7 @@ urlpatterns = [
         include("pdntasks.projects.urls", namespace="project_management"),
     ),
     path("tasks/", include("pdntasks.tasks.urls", namespace="tasks")),
+    path("revenue/", include("pdntasks.revenue.urls", namespace="revenue")),
     path("markdownx/", include(markdownx)),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

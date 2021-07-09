@@ -1,0 +1,100 @@
+{# dashboard.html #}
+{% extends "base.html" %}
+
+{% block title %}Revenue Dashboard{% endblock title %}
+
+{% block content %}
+  <div class="container-fluid">
+    <div class="jumbotron">
+      <h1>Revenue Dashboard</h1>
+      <p class="lead">For {{ today }}</p>
+      <hr class="my-4">
+      <a href="{% url 'revenue:invoice_add' %}" class="btn btn-primary" role="button">Add Invoice</a>
+      <a href="{% url 'revenue:invoice_list' %}" class="btn btn-info" role="button">View Invoices</a>
+    </div>
+    <div class="container border rounded p-4">
+      <h2>Revenue Stats</h2>
+      <div class="card-deck">
+        <div class="card">
+          <div class="card-body">
+            <h3 class="card-title">{{ ytd_revenue|floatformat:"2" }}€</h3>
+            <h4 class="card-subtitle mb-2 text-muted">YTD Revenue</h4>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-body">
+            <h3 class="card-title">{{ current_quarter_revenue|floatformat:"2" }}€</h3>
+            <h4 class="card-subtitle mb-2 text-muted">Current Quarter Revenue</h4>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-body">
+            <h3 class="card-title">{{ previous_quarter_revenue|floatformat:"2" }}€</h3>
+            <h4 class="card-subtitle mb-2 text-muted">Previous Quarter Revenue</h4>
+          </div>
+        </div>
+      </div>
+      <div class="card-deck">
+        <div class="card">
+          <div class="card-body">
+            <h3 class="card-title">-{{ ytd_costs|floatformat:"2" }}€</h3>
+            <h4 class="card-subtitle mb-2 text-muted">YTD Costs</h4>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-body">
+            <h3 class="card-title">-{{ current_quarter_vat|floatformat:"2" }}€</h3>
+            <h4 class="card-subtitle mb-2 text-muted">Current Quarter MwSt.</h4>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-body">
+            <h3 class="card-title">-{{ previous_quarter_vat|floatformat:"2" }}€</h3>
+            <h4 class="card-subtitle mb-2 text-muted">Previous Quarter MwSt.</h4>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="container border rounded p-4">
+      <h2>Invoices</h2>
+      <div class="table-responsive">
+        <table class="table table-striped table-lg">
+          <thead>
+          <tr>
+            <th scope="col">Invoice</th>
+            <th scope="col">Date</th>
+            <th scope="col">Customer</th>
+            <th scope="col">Amount</th>
+            <th scope="col">MwSt.</th>
+            <th scope="col">Paid On</th>
+            <th scope="col"></th>
+          </tr>
+          </thead>
+          {% for invoice in invoice_list %}
+            <tr>
+              <th scope="row">{{ invoice.invoice_id }}</th>
+              <td>{{ invoice.invoice_date }}</td>
+              <td>{{ invoice.customer }}</td>
+              <td>{{ invoice.invoice_amount|floatformat:"2" }}€</td>
+              <td>{{ invoice.vat_amount|floatformat:"2" }}€</td>
+              <td>
+                {% if invoice.paid %}
+                  {{ invoice.paid_date }}
+                {% else %}
+                  <span class="badge badge-danger">Unpaid</span>
+                {% endif %}
+              </td>
+              <td>
+                <a href="{% url 'revenue:invoice_detail' invoice.pk %}" class="btn btn-info"
+                   role="button">View</a>
+                <a href="{% url 'revenue:invoice_update' invoice.pk %}" class="btn btn-primary"
+                   role="button">Update</a>
+              </td>
+            </tr>
+          {% endfor %}
+        </table>
+      </div>
+    </div>
+  </div>
+
+{% endblock content %}
