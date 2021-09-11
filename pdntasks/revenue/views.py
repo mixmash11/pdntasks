@@ -59,7 +59,7 @@ class RevenueDashboard(TemplateView):
 
         # Get last 10 invoice for display in table
         context["invoice_list"] = Invoice.objects.filter(user=user).order_by(
-            "invoice_date"
+            "-invoice_date"
         )[:10]
 
         return context
