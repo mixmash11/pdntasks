@@ -15,6 +15,7 @@ from .celery_tasks import (
     send_task_status_notification_email_to_all,
     send_task_status_notification_email_to_assigned_user,
 )
+from .forms import TaskForm
 from .models import Task, Note
 
 
@@ -78,11 +79,10 @@ class TaskDetailView(LoginRequiredMixin, DetailView):
 
 class TaskCreateView(LoginRequiredMixin, CreateView):
     model = Task
-    fields = ["name", "status", "date_due", "assigned_to", "project", "info"]
+    form_class = TaskForm
 
     def form_valid(self, form):
         response = super().form_valid(form)
-
         task = self.object
 
         if task.assigned_to != self.request.user:
@@ -107,7 +107,7 @@ class TaskCreateView(LoginRequiredMixin, CreateView):
 
 class TaskUpdateView(LoginRequiredMixin, UpdateView):
     model = Task
-    fields = ["name", "status", "assigned_to", "date_due", "project", "info"]
+    form_class = TaskForm
     action = "Update"
 
     def form_valid(self, form):
@@ -119,20 +119,26 @@ class TaskUpdateView(LoginRequiredMixin, UpdateView):
             site_name = get_current_site(self.request).name
 
             if not task.assigned_to:
-                subject = f"Unassigned Task Updated: {task.slug}"
-                message = f"The unassigned Task {task.slug} was updated."
-                send_task_status_notification_email_to_all.delay(
-                    task.pk, subject, message, str(self.request.user), site_name
-                )
+                self.send_unassigned_task_update(site_name, task)
                 return response
 
-            subject = f"Task updated: {task.slug}"
-            message = f"Task {task.slug} was updated."
-            send_task_status_notification_email_to_assigned_user.delay(
-                task.pk, subject, message, str(self.request.user), site_name
-            )
+            self.send_user_task_update(site_name, task)
 
         return response
+
+    def send_unassigned_task_update(self, site_name, task):
+        subject = f"Unassigned Task Updated: {task.slug}"
+        message = f"The unassigned Task {task.slug} was updated."
+        send_task_status_notification_email_to_all.delay(
+            task.pk, subject, message, str(self.request.user), site_name
+        )
+
+    def send_user_task_update(self, site_name, task):
+        subject = f"Task updated: {task.slug}"
+        message = f"Task {task.slug} was updated."
+        send_task_status_notification_email_to_assigned_user.delay(
+            task.pk, subject, message, str(self.request.user), site_name
+        )
 
 
 class TaskDeleteView(LoginRequiredMixin, DeleteView):
@@ -163,20 +169,26 @@ class NoteCreateView(LoginRequiredMixin, CreateView):
             site_name = get_current_site(self.request).name
 
             if not task.assigned_to:
-                subject = f"New Note for Unassigned Task: {task.slug}"
-                message = f"The unassigned Task {task.slug} has a new note."
-                send_task_status_notification_email_to_all.delay(
-                    task.pk, subject, message, str(self.request.user), site_name
-                )
+                self.send_unassigned_task_note_creation(site_name, task)
                 return response
 
-            subject = f"New Note for Task: {task.slug}"
-            message = f"The Task {task.slug} has a new note."
-            send_task_status_notification_email_to_assigned_user.delay(
-                task.pk, subject, message, str(self.request.user), site_name
-            )
+            self.send_user_task_note_creation(site_name, task)
 
         return response
+
+    def send_unassigned_task_note_creation(self, site_name, task):
+        subject = f"New Note for Unassigned Task: {task.slug}"
+        message = f"The unassigned Task {task.slug} has a new note."
+        send_task_status_notification_email_to_all.delay(
+            task.pk, subject, message, str(self.request.user), site_name
+        )
+
+    def send_user_task_note_creation(self, site_name, task):
+        subject = f"New Note for Task: {task.slug}"
+        message = f"The Task {task.slug} has a new note."
+        send_task_status_notification_email_to_assigned_user.delay(
+            task.pk, subject, message, str(self.request.user), site_name
+        )
 
 
 class NoteUpdateView(LoginRequiredMixin, UpdateView):

@@ -4,6 +4,7 @@ Base settings to build other settings files upon.
 from pathlib import Path
 
 import environ
+from celery.schedules import crontab
 
 ROOT_DIR = Path(__file__).resolve(strict=True).parent.parent.parent
 # pdntasks/
@@ -277,6 +278,12 @@ CELERY_TASK_TIME_LIMIT = 5 * 60
 CELERY_TASK_SOFT_TIME_LIMIT = 60
 # http://docs.celeryproject.org/en/latest/userguide/configuration.html#beat-scheduler
 CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
+CELERY_BEAT_SCHEDULE = {
+    "reset_overdue_tasks_daily": {
+        "task": "pdntasks.tasks.celery_tasks.reset_overdue_task_due_date",
+        "schedule": crontab(minute=0, hour=4),
+    }
+}
 # django-allauth
 # ------------------------------------------------------------------------------
 ACCOUNT_ALLOW_REGISTRATION = env.bool("DJANGO_ACCOUNT_ALLOW_REGISTRATION", True)

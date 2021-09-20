@@ -13,6 +13,7 @@ from django.views.generic import (
     TemplateView,
 )
 
+from .forms import InvoiceForm
 from .models import Invoice
 from .services import (
     get_quarter_from_date,
@@ -85,16 +86,7 @@ class InvoiceDetailView(DetailView):
 
 class InvoiceCreateView(LoginRequiredMixin, CreateView):
     model = Invoice
-    fields = [
-        "invoice_id",
-        "customer",
-        "invoice_date",
-        "invoice_amount",
-        "vat_amount",
-        "paid",
-        "paid_date",
-        "invoice_file",
-    ]
+    form_class = InvoiceForm
 
     def form_valid(self, form):
         form.instance.user = self.request.user
@@ -104,15 +96,7 @@ class InvoiceCreateView(LoginRequiredMixin, CreateView):
 class InvoiceUpdateView(LoginRequiredMixin, UpdateView):
     model = Invoice
     action = "Update"
-    fields = [
-        "customer",
-        "invoice_date",
-        "invoice_amount",
-        "vat_amount",
-        "paid",
-        "paid_date",
-        "invoice_file",
-    ]
+    form_class = InvoiceForm
 
     def dispatch(self, request, *args, **kwargs):
         user = request.user

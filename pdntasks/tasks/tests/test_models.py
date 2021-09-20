@@ -1,3 +1,5 @@
+from datetime import date, timedelta
+
 import pytest
 from autoslug.utils import slugify
 
@@ -31,3 +33,34 @@ class TestTask:
 
         assert task_1.__str__() == f"{task_slug}"
         assert task_2.__str__() == f"{task_slug}-2"
+
+    def test_repeat_task_created(self):
+
+        task = TaskFactory(repeats="daily")
+
+        assert Task.objects.count() == 1
+
+        task.status = "complete"
+        task.save()
+
+        assert Task.objects.count() == 2
+
+    def test_repeat_task_not_created(self):
+
+        task = TaskFactory(repeats="daily")
+
+        assert Task.objects.count() == 1
+
+        task.status = "inactive"
+        task.save()
+
+        assert Task.objects.count() == 1
+
+    def test_repeat_task_due_date(self):
+        task = TaskFactory(repeats="daily")
+        task.status = "complete"
+        task.save()
+
+        new_task = Task.objects.last()
+
+        assert new_task.date_due == date.today() + timedelta(1)

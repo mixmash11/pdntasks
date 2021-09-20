@@ -1,3 +1,5 @@
+from datetime import date
+
 from allauth.utils import build_absolute_uri
 from celery import shared_task
 from django.core.mail import send_mail
@@ -71,6 +73,7 @@ def send_task_status_notification_email_to_assigned_user(
     :param basestring changed_by:
     :param basestring site_name:
     """
+    logger.info("START - SEND TASK STATUS NOTIFICATION (ASSIGNED USER)")
     logger.info("Preparing recipient list")
     task = Task.objects.get(pk=task_pk)
     recipient_list = [task.assigned_to.email]
@@ -79,3 +82,18 @@ def send_task_status_notification_email_to_assigned_user(
         changed_by, message, recipient_list, site_name, subject, task_pk
     )
     logger.info("Email successfully sent")
+    logger.info("STOP - SEND TASK STATUS NOTIFICATION (ASSIGNED USER)")
+
+
+@shared_task
+def reset_overdue_task_due_date():
+    logger.info("START - RESET OVERDUE TASKS")
+    today = date.today()
+    overdue_tasks = Task.objects.filter(date_due__lt=today)
+    for task in overdue_tasks:
+        logger.info(f"START - RESET OVERDUE TASK: {task.name}")
+        task.date_due = today
+        task.save()
+        logger.info(f"STOP - RESET OVERDUE TASK: {task.name}")
+    logger.info("STOP - RESET OVERDUE TASKS")
+    return 0

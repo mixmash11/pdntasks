@@ -1,9 +1,9 @@
 version: '3'
 
 volumes:
-  production_postgres_data: {}
-  production_postgres_data_backups: {}
-  production_traefik: {}
+  production_postgres_data: { }
+  production_postgres_data_backups: { }
+  production_traefik: { }
 
 services:
   django: &django
@@ -45,7 +45,7 @@ services:
       - "0.0.0.0:5555:5555"
 
   redis:
-    image: redis:5.0
+    image: redis:6
 
   celeryworker:
     <<: *django
@@ -61,7 +61,6 @@ services:
     <<: *django
     image: pdntasks_production_flower
     command: /start-flower
-
 
   awscli:
     build:

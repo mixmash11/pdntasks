@@ -35,13 +35,6 @@ class TestProject:
         assert project.__str__() == abbreviation
         assert str(project) == abbreviation
 
-    def test_abbreviation_caps(self):
-        abbreviation = "abc"
-        project = ProjectFactory(abbreviation=abbreviation)
-
-        assert project.abbreviation == abbreviation.upper()
-        assert str(project) == abbreviation.upper()
-
     def test_get_absolute_url(self):
         project = ProjectFactory()
         url = project.get_absolute_url()
