@@ -22,4 +22,4 @@ django-redis==4.12.1  # https://github.com/jazzband/django-redis
 django-autoslug==1.9.8 # https://github.com/justinmayer/django-autoslug/
 django-markdownx==3.0.1 # https://github.com/neutronX/django-markdownx
 django-filter==2.4.0 # https://github.com/carltongibson/django-filter
-django-cbv-htmx==0.0.4 # https://github.com/mixmash11/django-cbv-htmx
+django-cbv-htmx==0.0.5 # https://github.com/mixmash11/django-cbv-htmx
