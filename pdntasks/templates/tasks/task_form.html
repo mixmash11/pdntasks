@@ -13,8 +13,9 @@
             hx-target="#context-{{ task.slug }}"
             hx-swap="innerHTML">
     {% elif view.hx and view.action == "Add" %}
-      <form hx-post="{% url 'tasks:task_add' %}"
-            hx-target="#context-new"
+      <form id="new-task-form"
+            hx-post="{% url 'tasks:task_add' %}"
+            hx-target="#contexte-new"
             hx-swap="innerHTML">
     {% else %}
       <form method="post" action=".">
@@ -28,6 +29,12 @@
       data-target="#details-new"
       aria-expanded="true"
       aria-controls="details-new"
+      _="on htmx:afterOnLoad from #new-task-form
+          set @expanded to false then put it into #button-new
+          set #button-new.innerText to 'Add Task'
+          remove .btn-danger from #button-new
+          add .btn-primary to #button-new
+        "
     >
       Save
     </button>

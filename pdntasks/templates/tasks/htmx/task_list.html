@@ -13,10 +13,7 @@
     {% if  view.filter  != "My" %}
       <td>{{ task.assigned_to.name }}</td>
     {% endif %}
-    <td>{{ task.status|capfirst }}</td>
     <td>
-      {#      <a href="{% url 'tasks:task_detail' task.slug %}" class="btn btn-info"#}
-      {#         role="button">View</a>#}
       <button
         id="button-{{ task.slug }}"
         class="btn btn-primary"

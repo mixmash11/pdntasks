@@ -31,8 +31,9 @@
                 hx-swap="innerHTML"
                 hx-select="#context-new"
                 hx-indicator="#spinner-new"
-                _="on click
-                  toggle [@expanded=false]
+                _="
+                  on click
+                    toggle [@expanded=false]
                   if @expanded
                     set my.innerText to 'Cancel'
                     remove .btn-primary
@@ -41,7 +42,8 @@
                     set my.innerText to 'Add Task'
                     remove .btn-danger
                     add .btn-primary
-                  end"
+                  end
+                "
         >
           Add Task
         </button>
@@ -57,7 +59,6 @@
         {% if  view.filter  != "My" %}
           <th scope="col">Assigned To</th>
         {% endif %}
-        <th scope="col">Status</th>
         <th scope="col"></th>
       </tr>
       </thead>
