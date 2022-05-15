@@ -15,7 +15,7 @@
     {% elif view.hx and view.action == "Add" %}
       <form id="new-task-form"
             hx-post="{% url 'tasks:task_add' %}"
-            hx-target="#contexte-new"
+            hx-target="#context-new"
             hx-swap="innerHTML">
     {% else %}
       <form method="post" action=".">
