@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:o="urn:schemas-microsoft-com:office:office">
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css"
+        integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn" crossorigin="anonymous">
+
+  <title>Tasks and Goals for Today</title>
+</head>
+<body>
+<div class="container">
+  <h1 class="display-4">Good Morning {{ user_name }}!</h1>
+  <p class="lead">It's {{ today|date:"l" }}, {{ today|date:"F jS" }}.</p>
+  <p class="lead">These tasks are due today:</p>
+  <ul class="list-group border border-primary">
+    {% for task in todays_tasks %}
+      <li class="list-group-item">
+        <a class="text-reset text-decoration-none" href="{% url 'tasks:task_detail' task.slug %}">
+          {{ task.name }}
+        </a>
+      </li>
+    {% endfor %}
+  </ul>
+  <br>
+  {% if goals %}
+    <p class="lead">Let's review your goals:</p>
+    <ul class="list-group border border-success">
+      {% for goal in goals %}
+        <li class="list-group-item">
+          {{ goal.title }}
+        </li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+  {% if week_tasks or undated_tasks %}
+    <hr>
+    <h2 class="display-5">Looking Forward</h2>
+  {% endif %}
+  {% if week_tasks %}
+    <p class="lead">Here are tasks due in the next week:</p>
+    <ul class="list-group border border-info">
+      {% for task in week_tasks %}
+        <li class="list-group-item">
+          <a class="text-reset text-decoration-none" href="{% url 'tasks:task_detail' task.slug %}">
+            {{ task.name }}
+          </a>
+        </li>
+      {% endfor %}
+    </ul>
+    <br>
+  {% endif %}
+  {% if undated_tasks %}
+    <p class="lead">Here are five tasks without due dates that you may want to consider for the coming days:</p>
+    <ul class="list-group border border-info">
+      {% for task in undated_tasks %}
+        <li class="list-group-item">
+          <a class="text-reset text-decoration-none" href="{% url 'tasks:task_detail' task.slug %}">
+            {{ task.name }}
+          </a>
+        </li>
+      {% endfor %}
+    </ul>
+    <br>
+  {% endif %}
+  <div class="mx-auto">
+    <p class="text-center"><em>This email is from <a href="{{ site_domain }}">{{ site_name }}</a></em></p>
+  </div>
+
+</div>
+</body>
+</html>

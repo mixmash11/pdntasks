@@ -1,6 +1,8 @@
+from cbvhtmx.mixins import HxMixin
 from django.contrib.sites.shortcuts import get_current_site
 
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
 from django.views.generic import (
@@ -15,13 +17,16 @@ from .celery_tasks import (
     send_task_status_notification_email_to_all,
     send_task_status_notification_email_to_assigned_user,
 )
-from .forms import TaskForm
-from .models import Task, Note
+from .forms import TaskForm, GoalForm
+from .models import Task, Note, Goal
 
 
 class TaskListView(LoginRequiredMixin, ListView):
     model = Task
     ordering = ["date_due", "-status_changed"]
+
+    filter = "Full"
+    description = "A list of all tasks."
 
 
 class UserTaskListView(LoginRequiredMixin, ListView):
@@ -34,6 +39,7 @@ class UserTaskListView(LoginRequiredMixin, ListView):
         ).order_by("date_due", "-status_changed")
 
     filter = "My"
+    description = "A list of current tasks assigned to you."
 
 
 class UnassignedTaskListView(LoginRequiredMixin, ListView):
@@ -42,6 +48,7 @@ class UnassignedTaskListView(LoginRequiredMixin, ListView):
     )
     template_name = "tasks/task_list.html"
     filter = "Unassigned"
+    description = "A list of not unassigned tasks."
 
 
 class WaitingTaskListView(LoginRequiredMixin, ListView):
@@ -50,6 +57,7 @@ class WaitingTaskListView(LoginRequiredMixin, ListView):
     )
     template_name = "tasks/task_list.html"
     filter = "Waiting on Response"
+    description = "A list of tasks where you're waiting on a reply from someone."
 
 
 class InactiveTaskListView(LoginRequiredMixin, ListView):
@@ -58,6 +66,7 @@ class InactiveTaskListView(LoginRequiredMixin, ListView):
     )
     template_name = "tasks/task_list.html"
     filter = "Inactive"
+    description = "A list of inactive tasks."
 
 
 class CompletedTaskListView(LoginRequiredMixin, ListView):
@@ -66,10 +75,12 @@ class CompletedTaskListView(LoginRequiredMixin, ListView):
     )
     template_name = "tasks/task_list.html"
     filter = "Completed"
+    description = "A list of completed tasks."
 
 
-class TaskDetailView(LoginRequiredMixin, DetailView):
+class TaskDetailView(LoginRequiredMixin, HxMixin, DetailView):
     model = Task
+    hx_template = "tasks/htmx/task_detail.html"
 
     def get_context_data(self, **kwargs):
         context = super(TaskDetailView, self).get_context_data(**kwargs)
@@ -77,9 +88,10 @@ class TaskDetailView(LoginRequiredMixin, DetailView):
         return context
 
 
-class TaskCreateView(LoginRequiredMixin, CreateView):
+class TaskCreateView(LoginRequiredMixin, HxMixin, CreateView):
     model = Task
     form_class = TaskForm
+    action = "Add"
 
     def form_valid(self, form):
         response = super().form_valid(form)
@@ -105,7 +117,7 @@ class TaskCreateView(LoginRequiredMixin, CreateView):
         return response
 
 
-class TaskUpdateView(LoginRequiredMixin, UpdateView):
+class TaskUpdateView(LoginRequiredMixin, HxMixin, UpdateView):
     model = Task
     form_class = TaskForm
     action = "Update"
@@ -146,13 +158,43 @@ class TaskDeleteView(LoginRequiredMixin, DeleteView):
     success_url = reverse_lazy("home")
 
 
-class NoteCreateView(LoginRequiredMixin, CreateView):
+class HxTriggerFormMixin:
+
+    hx = False
+    trigger = None
+
+    def form_valid(self, form):
+        if self.hx and self.trigger:
+            super().form_valid(form)
+            response = HttpResponse(status=204)
+            response.headers["HX-Trigger"] = self.trigger
+            return response
+        else:
+            return super().form_valid(form)
+
+
+class NoteListView(LoginRequiredMixin, ListView):
+    model = Note
+    task = None
+
+    def dispatch(self, request, *args, **kwargs):
+        self.task = get_object_or_404(Task, slug=kwargs["task_slug"])
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_queryset(self):
+        queryset = Note.objects.filter(task=self.task).order_by("-created")
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data(**kwargs)
+        context_data["task"] = self.task
+        return context_data
+
+
+class NoteCreateView(LoginRequiredMixin, HxMixin, HxTriggerFormMixin, CreateView):
     model = Note
     fields = ["text"]
-
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.task = None
+    task = None
 
     def dispatch(self, request, *args, **kwargs):
         self.task = get_object_or_404(Task, slug=kwargs["task_slug"])
@@ -161,6 +203,7 @@ class NoteCreateView(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         form.instance.user = self.request.user
         form.instance.task = self.task
+        self.trigger = f"update-notes-{ self.task.slug }"
         response = super().form_valid(form)
 
         task = self.task
@@ -191,31 +234,65 @@ class NoteCreateView(LoginRequiredMixin, CreateView):
         )
 
 
-class NoteUpdateView(LoginRequiredMixin, UpdateView):
+class NoteUpdateView(LoginRequiredMixin, HxMixin, HxTriggerFormMixin, UpdateView):
     model = Note
     fields = ["text"]
     action = "Update"
+    task = None
 
     def form_valid(self, form):
+        self.task = form.instance.task
+        self.trigger = f"update-notes-{ self.task.slug }"
         response = super().form_valid(form)
 
-        task = form.instance.task
-
-        if task.assigned_to != self.request.user:
+        if self.task.assigned_to != self.request.user:
             site_name = get_current_site(self.request).name
 
-            if not task.assigned_to:
-                subject = f"Note updated for Unassigned Task: {task.slug}"
-                message = f"The unassigned Task {task.slug} has an updated note."
+            if not self.task.assigned_to:
+                subject = f"Note updated for Unassigned Task: {self.task.slug}"
+                message = f"The unassigned Task {self.task.slug} has an updated note."
                 send_task_status_notification_email_to_all.delay(
-                    task.pk, subject, message, str(self.request.user), site_name
+                    self.task.pk, subject, message, str(self.request.user), site_name
                 )
                 return response
 
-            subject = f"Updated Note for Task: {task.slug}"
-            message = f"The Task {task.slug} has an updated note."
+            subject = f"Updated Note for Task: {self.task.slug}"
+            message = f"The Task {self.task.slug} has an updated note."
             send_task_status_notification_email_to_assigned_user.delay(
-                task.pk, subject, message, str(self.request.user), site_name
+                self.task.pk, subject, message, str(self.request.user), site_name
             )
 
         return response
+
+
+class UserGoalListView(LoginRequiredMixin, ListView):
+    model = Goal
+
+    def get_queryset(self):
+        return Goal.objects.filter(goal_user=self.request.user)
+
+
+class GoalDetailView(LoginRequiredMixin, DetailView):
+    model = Goal
+
+
+class GoalCreateView(LoginRequiredMixin, CreateView):
+    model = Goal
+    form_class = GoalForm
+
+    def form_valid(self, form):
+        form.instance.goal_user = self.request.user
+        response = super().form_valid(form)
+
+        return response
+
+
+class GoalUpdateView(LoginRequiredMixin, UpdateView):
+    model = Goal
+    form_class = GoalForm
+    action = "Update"
+
+
+class GoalDeleteView(LoginRequiredMixin, DeleteView):
+    model = Goal
+    success_url = reverse_lazy("tasks:goal_list")

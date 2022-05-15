@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}{{ view.filter }} Task List{% endblock %}
+
+{% block content %}
+  <div class="container-fluid">
+    <h1 class="display-4">My Goals</h1>
+    <div class="container border rounded p-4">
+      <ul class="list-group list-group-flush">
+        {% for goal_entry in object_list %}
+          <p class="list-group-item list-group-item-action"
+             hx-get="{% url 'tasks:goal_detail' goal_entry.slug %}"
+             hx-target="#context-{{ goal_entry.slug }}"
+             hx-swap="innerHTML"
+             hx-select="#hx-goal-detail"
+             data-toggle="collapse"
+             data-target="#context-{{ goal_entry.slug }}"
+             aria-expanded="false"
+             aria-controls="context-{{ goal_entry.slug }}">
+            {{ goal_entry }}
+          </p>
+          <div class="collapse container" id="context-{{ goal_entry.slug }}"></div>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+{% endblock %}

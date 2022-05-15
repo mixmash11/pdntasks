@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Notes for Task: {{ task }}{% endblock title %}
+
+{% block content %}
+
+  <div class="jumbotron">
+    <h2>
+      Notes for Task: {{ task }}
+    </h2>
+  </div>
+  <div id="notes-{{ task.slug }}">
+    {% for note in note_list %}
+      <div class="card p-4" id="note-{{ note.slug }}">
+        <div class="card-body">
+          {{ note.formatted_markdown|safe }}
+        </div>
+        <div id="note-{{ note.slug }}" class="card-footer text-muted">
+          {{ note.user.name }} on {{ note.created }}
+          {% if note.created != note.modified %}
+            Updated on {{ note.modified }}
+          {% endif %}
+          {% if request.user == note.user %}
+            <br>
+            <button
+              class="btn btn-secondary"
+              hx-get="{% url 'tasks:note_update' note.slug %}"
+              hx-target="#note-{{ note.slug }}"
+              hx-swap="innerHTML show:top"
+              hx-select="#note-form"
+              type="button"
+            >
+              Update Note
+            </button>
+          {% endif %}
+        </div>
+      </div>
+    {% empty %}
+      No Notes available.
+    {% endfor %}
+    <img id="spinner-notes-{{ task.slug }}" class="htmx-indicator" src="{% static 'images/oval.svg' %}"
+         alt="loading...">
+  </div>
+
+{% endblock content %}

@@ -22,7 +22,7 @@ from .services import (
 )
 
 
-class RevenueDashboard(TemplateView):
+class RevenueDashboard(LoginRequiredMixin, TemplateView):
 
     template_name = "revenue/dashboard.html"
 
@@ -80,7 +80,7 @@ class InvoiceListView(LoginRequiredMixin, ListView):
         return super().get_queryset()
 
 
-class InvoiceDetailView(DetailView):
+class InvoiceDetailView(LoginRequiredMixin, DetailView):
     model = Invoice
 
 
@@ -114,12 +114,12 @@ class InvoiceZIPView(LoginRequiredMixin, View):
 
         user = request.user
         year = kwargs["year"]
-        quarter = kwargs["quarter"]
+        month = kwargs["month"]
 
-        filename = f"Invoices_{year}-Q{quarter}.zip"
+        filename = f"Invoices_{year}-{month}.zip"
 
         invoices = Invoice.objects.filter(
-            user=user, paid_date__year=year, paid_date__quarter=quarter
+            user=user, paid_date__year=year, paid_date__month=month
         )
 
         response = HttpResponse(content_type="application/zip")

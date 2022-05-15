@@ -6,7 +6,7 @@ urlpatterns = [
     path(route="", view=views.RevenueDashboard.as_view(), name="dashboard"),
     path(route="invoices/", view=views.InvoiceListView.as_view(), name="invoice_list"),
     path(
-        route="invoices/export/<int:year>/<int:quarter>/",
+        route="invoices/export/<int:year>/<int:month>/",
         view=views.InvoiceZIPView.as_view(),
         name="invoice_export",
     ),

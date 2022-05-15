@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block title %}Goal: {{ goal.title }}{% endblock title %}
+
+{% block content %}
+
+  <div class="container-fluid">
+    <div class="jumbotron">
+      <h2>
+        {{ goal.title }}
+      </h2>
+    </div>
+    <div id="hx-goal-detail" class="container border rounded p-4">
+      <div class="text-center">
+        <a class="btn btn-primary btn-lg" href="{% url 'tasks:goal_update' goal.slug %}"
+           role="button">Update</a>
+        <a class="btn btn-danger btn-lg" href="{% url 'tasks:goal_delete' goal.slug %}"
+           role="button">Delete</a>
+      </div>
+      <hr class="my-4">
+      {% if goal.end_date %}
+        <p><i>Ends on {{ goal.end_date }}</i></p>
+      {% endif %}
+      <div>{{ goal.formatted_markdown|safe }}</div>
+    </div>
+  </div>
+
+
+{% endblock content %}

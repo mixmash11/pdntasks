@@ -1,0 +1,13 @@
+behavior ToggleCollapse
+    on click
+      toggle [@expanded=false]
+      if @expanded
+        set my.innerText to 'Hide'
+        remove .btn-primary
+        add .btn-danger
+      else
+        set my.innerText to 'Show'
+        remove .btn-danger
+        add .btn-primary
+    end
+end

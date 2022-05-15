@@ -1,20 +1,27 @@
 {% extends "base.html" %}
 {% load crispy_forms_tags %}
 
-{% block title %}{{ view.action|default:"Add" }} Task{% endblock title %}
+{% block title %}{% if not view.hx %}{{ view.action|default:"Add" }} Task{% endif %}{% endblock title %}
 
 {% block content %}
-  <div class="container-fluid">
+  <div id="context-{{ task.slug|default:'new' }}" class="container border rounded p-4">
     <h1 class="display-4">{{ view.action|default:"Add" }} Task</h1>
-    <div class="container border rounded p-4">
-      <h3>Task Information</h3>
-      <a href="https://www.markdownguide.org/basic-syntax" target="_blank">Markdown Style Guide</a>
-      <hr class="my-4">
+    <a href="https://www.markdownguide.org/basic-syntax" target="_blank">Markdown Style Guide</a>
+    <hr class="my-4">
+    {% if view.hx and view.action == "Update" %}
+      <form hx-post="{% url 'tasks:task_update' task.slug %}"
+            hx-target="#context-{{ task.slug }}"
+            hx-swap="innerHTML">
+    {% elif view.hx and view.action == "Add" %}
+      <form hx-post="{% url 'tasks:task_add' %}"
+            hx-target="#context-new"
+            hx-swap="innerHTML">
+    {% else %}
       <form method="post" action=".">
-        {% csrf_token %}
-        {{ form|crispy }}
-        <button type="submit" class="btn btn-primary">Save</button>
-      </form>
-    </div>
+    {% endif %}
+    {% csrf_token %}
+    {{ form|crispy }}
+    <button type="submit" class="btn btn-primary">Save</button>
+    </form>
   </div>
 {% endblock content %}

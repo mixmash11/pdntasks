@@ -85,3 +85,22 @@ class Note(TimeStampedModel):
 
     def get_absolute_url(self):
         return reverse("tasks:task_detail", kwargs={"slug": self.task.slug})
+
+
+class Goal(TimeStampedModel):
+
+    title = models.CharField("Goal Title", max_length=255)
+    info = MarkdownxField("Information (Markdown)")
+    goal_user = models.ForeignKey("users.User", models.SET_NULL, blank=True, null=True)
+    end_date = models.DateField("End Date", blank=True, null=True)
+    slug = AutoSlugField(populate_from="goal_user", sep="-", unique=True)
+
+    @property
+    def formatted_markdown(self):
+        return markdownify(self.info)
+
+    def __str__(self):
+        return f"{self.title}"
+
+    def get_absolute_url(self):
+        return reverse("tasks:goal_detail", kwargs={"slug": self.slug})

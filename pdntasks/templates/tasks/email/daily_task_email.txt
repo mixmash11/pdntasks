@@ -1,0 +1,33 @@
+Good Morning {{ user_name }}!
+
+It's {{ today|date:"l" }}, {{ today|date:"F jS" }}.
+
+These tasks are due today:
+{% for task in todays_tasks %}
+- {{ task.name }}
+{% endfor %}
+{% if goals %}
+Let's review your goals:
+{% for goal in goals %}
+- An item
+{% endfor %}
+{% endif %}
+{% if week_tasks or undated_tasks %}
+========================================================
+
+Looking Forward
+{% endif %}
+{% if week_tasks %}
+Here are tasks due in the next week:
+{% for task in week_tasks %}
+- {{ task.name }}
+{% endfor %}
+{% endif %}
+{% if undated_tasks %}
+Here are five tasks without due dates that you may want to consider for the coming days:
+{% for task in undated_tasks %}
+- {{ task.name }}
+{% endfor %}
+{% endif %}
+Thank you for using {{ site_name }}!
+{{ site_domain }}

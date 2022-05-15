@@ -2,7 +2,7 @@
 Base settings to build other settings files upon.
 """
 from pathlib import Path
-
+import re
 import environ
 from celery.schedules import crontab
 
@@ -43,6 +43,7 @@ LOCALE_PATHS = [str(ROOT_DIR / "locale")]
 # https://docs.djangoproject.com/en/dev/ref/settings/#databases
 DATABASES = {"default": env.db("DATABASE_URL")}
 DATABASES["default"]["ATOMIC_REQUESTS"] = True
+DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
 # URLS
 # ------------------------------------------------------------------------------
@@ -72,6 +73,7 @@ THIRD_PARTY_APPS = [
     "django_celery_beat",
     "markdownx",
     "django_filters",
+    "cbvhtmx",
 ]
 
 LOCAL_APPS = [
@@ -282,7 +284,11 @@ CELERY_BEAT_SCHEDULE = {
     "reset_overdue_tasks_daily": {
         "task": "pdntasks.tasks.celery_tasks.reset_overdue_task_due_date",
         "schedule": crontab(minute=0, hour=4),
-    }
+    },
+    "send_daily_emails": {
+        "task": "pdntasks.tasks.celery_tasks.arrange_daily_emails",
+        "schedule": crontab(minute=0, hour=6),
+    },
 }
 # django-allauth
 # ------------------------------------------------------------------------------
@@ -299,5 +305,13 @@ ACCOUNT_ADAPTER = "pdntasks.users.adapters.AccountAdapter"
 SOCIALACCOUNT_ADAPTER = "pdntasks.users.adapters.SocialAccountAdapter"
 
 
-# Your stuff...
+# Ignore Broken Link Email URLS
 # ------------------------------------------------------------------------------
+IGNORABLE_404_URLS = [
+    re.compile(r"\.(php|cgi)$"),
+    re.compile(r"\.(php|cgi)\?"),
+    re.compile(r"^/phpmyadmin/"),
+    re.compile(r"^/sites/default/files/ALFA_DATA"),
+    re.compile(r"^/wp-content/"),
+    re.compile(r"^/templates/"),
+]

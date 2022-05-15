@@ -1,0 +1,65 @@
+{# htmx/task_list.html #}
+{% load static %}
+{% load query_extras %}
+
+{% for task in task_list %}
+  <tr>
+    <th scope="row">
+      <a href="{% url 'tasks:task_detail' task.slug %}">
+        {% if not "-" in task.slug %}
+          {{ task.slug }}-1
+        {% else %}
+          {{ task.slug }}
+        {% endif %}
+      </a>
+    </th>
+    <td><p class="h6">{{ task.name }}</p></td>
+    <td>
+      {% if task.date_due %}
+        {{ task.date_due }}
+      {% endif %}
+    </td>
+    {% if  view.filter  != "My" %}
+      <td>{{ task.assigned_to.name }}</td>
+    {% endif %}
+    <td>{{ task.status|capfirst }}</td>
+    <td>
+      {#      <a href="{% url 'tasks:task_detail' task.slug %}" class="btn btn-info"#}
+      {#         role="button">View</a>#}
+      <button
+        id="button-{{ task.slug }}"
+        class="btn btn-primary"
+        hx-get="{% url 'tasks:task_detail' task.slug %}"
+        hx-target="#context-{{ task.slug }}"
+        hx-swap="innerHTML"
+        hx-select="#context-{{ task.slug }}"
+        hx-indicator="#spinner-{{ task.slug }}"
+        data-toggle="collapse"
+        data-target="#details-{{ task.slug }}"
+        aria-expanded="false"
+        aria-controls="details-{{ task.slug }}"
+        _="install ToggleCollapse"
+      >
+        Show
+      </button>
+    </td>
+  </tr>
+  <tr id="details-{{ task.slug }}" class="collapse">
+    <td colspan="6">
+      <div id="context-{{ task.slug }}">
+        <div class="text-center">
+          <img id="spinner-{{ task.slug }}" class="htmx-indicator" src="{% static 'images/oval.svg' %}"
+               alt="loading...">
+        </div>
+      </div>
+    </td>
+  </tr>
+{% empty %}
+  <tr>
+    <td colspan="6">
+      <div class="text-center">
+        No Tasks here!
+      </div>
+    </td>
+  </tr>
+{% endfor %}
