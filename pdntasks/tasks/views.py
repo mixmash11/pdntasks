@@ -21,15 +21,17 @@ from .forms import TaskForm, GoalForm
 from .models import Task, Note, Goal
 
 
-class TaskListView(LoginRequiredMixin, ListView):
+class TaskListView(LoginRequiredMixin, HxMixin, ListView):
     model = Task
     ordering = ["date_due", "-status_changed"]
 
     filter = "Full"
     description = "A list of all tasks."
 
+    hx_template = "tasks/htmx/task_list.html"
 
-class UserTaskListView(LoginRequiredMixin, ListView):
+
+class UserTaskListView(LoginRequiredMixin, HxMixin, ListView):
     model = Task
 
     def get_queryset(self):
@@ -41,8 +43,10 @@ class UserTaskListView(LoginRequiredMixin, ListView):
     filter = "My"
     description = "A list of current tasks assigned to you."
 
+    hx_template = "tasks/htmx/task_list.html"
 
-class UnassignedTaskListView(LoginRequiredMixin, ListView):
+
+class UnassignedTaskListView(LoginRequiredMixin, HxMixin, ListView):
     queryset = Task.objects.filter(assigned_to__isnull=True).order_by(
         "date_due", "-status_changed"
     )
@@ -50,8 +54,10 @@ class UnassignedTaskListView(LoginRequiredMixin, ListView):
     filter = "Unassigned"
     description = "A list of not unassigned tasks."
 
+    hx_template = "tasks/htmx/task_list.html"
 
-class WaitingTaskListView(LoginRequiredMixin, ListView):
+
+class WaitingTaskListView(LoginRequiredMixin, HxMixin, ListView):
     queryset = Task.objects.filter(status="waiting").order_by(
         "date_due", "-status_changed"
     )
@@ -59,8 +65,10 @@ class WaitingTaskListView(LoginRequiredMixin, ListView):
     filter = "Waiting on Response"
     description = "A list of tasks where you're waiting on a reply from someone."
 
+    hx_template = "tasks/htmx/task_list.html"
 
-class InactiveTaskListView(LoginRequiredMixin, ListView):
+
+class InactiveTaskListView(LoginRequiredMixin, HxMixin, ListView):
     queryset = Task.objects.filter(status="inactive").order_by(
         "date_due", "-status_changed"
     )
@@ -68,14 +76,18 @@ class InactiveTaskListView(LoginRequiredMixin, ListView):
     filter = "Inactive"
     description = "A list of inactive tasks."
 
+    hx_template = "tasks/htmx/task_list.html"
 
-class CompletedTaskListView(LoginRequiredMixin, ListView):
+
+class CompletedTaskListView(LoginRequiredMixin, HxMixin, ListView):
     queryset = Task.objects.filter(status="complete").order_by(
         "date_due", "-status_changed"
     )
     template_name = "tasks/task_list.html"
     filter = "Completed"
     description = "A list of completed tasks."
+
+    hx_template = "tasks/htmx/task_list.html"
 
 
 class TaskDetailView(LoginRequiredMixin, HxMixin, DetailView):
@@ -156,6 +168,15 @@ class TaskUpdateView(LoginRequiredMixin, HxMixin, UpdateView):
 class TaskDeleteView(LoginRequiredMixin, DeleteView):
     model = Task
     success_url = reverse_lazy("home")
+
+
+def task_done(request, slug):
+    task = get_object_or_404(Task, slug=slug)
+    task.status = "complete"
+    task.save()
+    response = HttpResponse(status=204)
+    response.headers["HX-Trigger"] = "reload-tasks"
+    return response
 
 
 class HxTriggerFormMixin:

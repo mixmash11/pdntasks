@@ -52,6 +52,11 @@ urlpatterns = [
         view=views.TaskDeleteView.as_view(),
         name="task_delete",
     ),
+    path(
+        route="<slug:slug>/complete/",
+        view=views.task_done,
+        name="task_complete",
+    ),
     path(route="<slug:slug>/", view=views.TaskDetailView.as_view(), name="task_detail"),
     path(
         route="<slug:task_slug>/add_note/",

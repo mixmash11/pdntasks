@@ -4,16 +4,7 @@
 
 {% for task in task_list %}
   <tr>
-    <th scope="row">
-      <a href="{% url 'tasks:task_detail' task.slug %}">
-        {% if not "-" in task.slug %}
-          {{ task.slug }}-1
-        {% else %}
-          {{ task.slug }}
-        {% endif %}
-      </a>
-    </th>
-    <td><p class="h6">{{ task.name }}</p></td>
+    <th scope="row"><p class="h6">{{ task.name }}</p></th>
     <td>
       {% if task.date_due %}
         {{ task.date_due }}

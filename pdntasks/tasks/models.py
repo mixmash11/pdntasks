@@ -2,6 +2,7 @@ from datetime import timedelta, date
 
 from autoslug import AutoSlugField
 from django.db import models
+from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from markdownx.models import MarkdownxField
 from markdownx.utils import markdownify

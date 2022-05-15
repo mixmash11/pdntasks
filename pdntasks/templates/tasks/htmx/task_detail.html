@@ -1,11 +1,13 @@
 {# htmx\task_detail.html #}
 {% load static %}
 
-<div id="context-{{ task.slug }}" class="container border rounded p-4">
+<div id="context-{{ task.slug }}">
   <div id="actions-{{ task.slug }}" class="text-center">
     <button
-      class="btn btn-success mh1"
+      class="btn btn-success my-1"
       type="button"
+      hx-get="{% url 'tasks:task_complete' task.slug %}"
+      hx-swap="none"
     >
       Done
     </button>
@@ -14,7 +16,7 @@
       hx-target="#context-{{ task.slug }}"
       hx-swap="innerHTML"
       hx-select="#context-{{ task.slug }}"
-      class="btn btn-primary mh1"
+      class="btn btn-primary my-1"
       type="button"
     >
       Update
@@ -28,7 +30,7 @@
       hx-target="#add-note-{{ task.slug }}"
       hx-swap="innerHTML show:top"
       hx-select="#note-form"
-      class="btn btn-secondary mh1"
+      class="btn btn-secondary my-1"
       type="button"
       _="on click
         toggle [@expanded=false]
