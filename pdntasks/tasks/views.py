@@ -21,6 +21,20 @@ from .forms import TaskForm, GoalForm
 from .models import Task, Note, Goal
 
 
+class HxTriggerFormMixin:
+    hx = False
+    trigger = None
+
+    def form_valid(self, form):
+        if self.hx and self.trigger:
+            super().form_valid(form)
+            response = HttpResponse(status=204)
+            response.headers["HX-Trigger"] = self.trigger
+            return response
+        else:
+            return super().form_valid(form)
+
+
 class TaskListView(LoginRequiredMixin, HxMixin, ListView):
     model = Task
     ordering = ["date_due", "-status_changed"]
@@ -100,10 +114,11 @@ class TaskDetailView(LoginRequiredMixin, HxMixin, DetailView):
         return context
 
 
-class TaskCreateView(LoginRequiredMixin, HxMixin, CreateView):
+class TaskCreateView(LoginRequiredMixin, HxMixin, HxTriggerFormMixin, CreateView):
     model = Task
     form_class = TaskForm
     action = "Add"
+    trigger = "reload-tasks"
 
     def form_valid(self, form):
         response = super().form_valid(form)
@@ -179,21 +194,6 @@ def task_done(request, slug):
     return response
 
 
-class HxTriggerFormMixin:
-
-    hx = False
-    trigger = None
-
-    def form_valid(self, form):
-        if self.hx and self.trigger:
-            super().form_valid(form)
-            response = HttpResponse(status=204)
-            response.headers["HX-Trigger"] = self.trigger
-            return response
-        else:
-            return super().form_valid(form)
-
-
 class NoteListView(LoginRequiredMixin, ListView):
     model = Note
     task = None
@@ -224,7 +224,7 @@ class NoteCreateView(LoginRequiredMixin, HxMixin, HxTriggerFormMixin, CreateView
     def form_valid(self, form):
         form.instance.user = self.request.user
         form.instance.task = self.task
-        self.trigger = f"update-notes-{ self.task.slug }"
+        self.trigger = f"update-notes-{self.task.slug}"
         response = super().form_valid(form)
 
         task = self.task
@@ -263,7 +263,7 @@ class NoteUpdateView(LoginRequiredMixin, HxMixin, HxTriggerFormMixin, UpdateView
 
     def form_valid(self, form):
         self.task = form.instance.task
-        self.trigger = f"update-notes-{ self.task.slug }"
+        self.trigger = f"update-notes-{self.task.slug}"
         response = super().form_valid(form)
 
         if self.task.assigned_to != self.request.user:
