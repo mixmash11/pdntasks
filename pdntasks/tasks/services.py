@@ -27,7 +27,7 @@ def get_random_queryset_samples(queryset, max_k=5):
     """
     len_queryset = len(queryset)
     if len_queryset > 0 and len_queryset >= max_k:
-        return random.sample(queryset, k=max_k)
+        return random.sample(list(queryset), k=max_k)
     elif len_queryset > 0:
         return list(queryset)
     else:
