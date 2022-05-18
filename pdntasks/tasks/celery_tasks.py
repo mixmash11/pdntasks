@@ -148,8 +148,13 @@ def send_daily_email(user_pk, site_name):
     html_email = render_to_string("tasks/email/daily_task_email.html", email_content)
 
     logger.info("Sending email")
-    send_mail(subject, plain_email, None, [user.email], html_message=html_email)
-
+    emails_sent = send_mail(
+        subject, plain_email, None, [user.email], html_message=html_email
+    )
+    if emails_sent > 0:
+        logger.info("Email sent sucessfully.")
+    else:
+        logger.info("Email not sent.")
     logger.info("STOP - SEND DAILY EMAIL")
 
     return 0

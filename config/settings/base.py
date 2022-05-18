@@ -287,7 +287,7 @@ CELERY_BEAT_SCHEDULE = {
     },
     "send_daily_emails": {
         "task": "pdntasks.tasks.celery_tasks.arrange_daily_emails",
-        "schedule": crontab(minute=0, hour=6),
+        "schedule": crontab(minute=58, hour=6),
     },
 }
 # django-allauth
