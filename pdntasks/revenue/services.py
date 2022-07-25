@@ -89,7 +89,7 @@ def calculate_income_tax(income):
 
 
 def get_projected_revenue_tax(
-    current_revenue, month, quarterly_prepayment=2700, projected_writeoffs=7000
+    current_revenue, month, quarterly_prepayment=2700.00, projected_writeoffs=7000.00
 ):
     average_monthly_revenue = current_revenue / month
     projected_revenue = average_monthly_revenue * 12
