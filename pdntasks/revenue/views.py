@@ -36,6 +36,9 @@ class RevenueDashboard(LoginRequiredMixin, TemplateView):
 
         # QuerySets for invoices (year, current quarter, previous quarter)
         current_year_invoices = Invoice.get_invoices_from_year(user, today.year)
+        current_month_invoices = Invoice.get_invoices_from_month(
+            user, today.month, today.year
+        )
         previous_month_invoices = Invoice.get_invoices_from_month(
             user, previous_month.month, today.year
         )
@@ -45,11 +48,16 @@ class RevenueDashboard(LoginRequiredMixin, TemplateView):
         previous_month_totals = get_total_revenue_vat_from_invoices(
             previous_month_invoices
         )
+        current_month_totals = get_total_revenue_vat_from_invoices(
+            current_month_invoices
+        )
         projected_values = get_projected_revenue_tax(ytd_totals["revenue"], today.month)
 
         context["ytd_revenue"] = ytd_totals["revenue"]
         context["ytd_vat"] = ytd_totals["vat"]
         context["ytd_tax"] = ytd_totals["tax"]
+        context["current_month_revenue"] = current_month_totals["revenue"]
+        context["current_month_vat"] = current_month_totals["vat"]
         context["previous_month_revenue"] = previous_month_totals["revenue"]
         context["previous_month_vat"] = previous_month_totals["vat"]
         context["proj_revenue"] = projected_values["revenue"]

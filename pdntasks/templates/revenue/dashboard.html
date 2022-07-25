@@ -17,6 +17,21 @@
       <div class="card-deck">
         <div class="card">
           <div class="card-body">
+            <h3 class="card-title">{{ current_month_revenue|floatformat:"2" }}€</h3>
+            <h4 class="card-subtitle mb-2 text-muted">Current Month Revenue</h4>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-body">
+            <h3 class="card-title">{{ current_month_vat|floatformat:"2" }}€</h3>
+            <h4 class="card-subtitle mb-2 text-muted">Current Month VAT</h4>
+          </div>
+        </div>
+      </div>
+      <br>
+      <div class="card-deck">
+        <div class="card">
+          <div class="card-body">
             <h3 class="card-title">{{ previous_month_revenue|floatformat:"2" }}€</h3>
             <h4 class="card-subtitle mb-2 text-muted">Prev. Month Revenue</h4>
           </div>
