@@ -45,9 +45,7 @@ class RevenueDashboard(LoginRequiredMixin, TemplateView):
         previous_month_totals = get_total_revenue_vat_from_invoices(
             previous_month_invoices
         )
-        projected_values = get_projected_revenue_tax(
-            ytd_totals["revenue"], previous_month.month
-        )
+        projected_values = get_projected_revenue_tax(ytd_totals["revenue"], today.month)
 
         context["ytd_revenue"] = ytd_totals["revenue"]
         context["ytd_vat"] = ytd_totals["vat"]
