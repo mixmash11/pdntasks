@@ -16,9 +16,8 @@ from django.views.generic import (
 from .forms import InvoiceForm
 from .models import Invoice
 from .services import (
-    get_quarter_from_date,
-    get_previous_quarter,
     get_total_revenue_vat_from_invoices,
+    get_projected_revenue_tax,
 )
 
 
@@ -31,32 +30,33 @@ class RevenueDashboard(LoginRequiredMixin, TemplateView):
         user = self.request.user
 
         today = datetime.date.today()
+        first = today.replace(day=1)
+        previous_month = first - datetime.timedelta(days=1)
         context["today"] = today.strftime("%x")
-        current_quarter_number = get_quarter_from_date(today)
-        previous_quarter_number, previous_year_number = get_previous_quarter(
-            current_quarter_number, today.year
-        )
 
         # QuerySets for invoices (year, current quarter, previous quarter)
         current_year_invoices = Invoice.get_invoices_from_year(user, today.year)
-        current_quarter_invoices = Invoice.get_invoices_from_quarter(
-            user, current_quarter_number, today.year
-        )
-        previous_quarter_invoices = Invoice.get_invoices_from_quarter(
-            user, previous_quarter_number, previous_year_number
+        previous_month_invoices = Invoice.get_invoices_from_month(
+            user, previous_month.month, today.year
         )
 
         # Total dicts
         ytd_totals = get_total_revenue_vat_from_invoices(current_year_invoices)
-        qtr_totals = get_total_revenue_vat_from_invoices(current_quarter_invoices)
-        p_qtr_totals = get_total_revenue_vat_from_invoices(previous_quarter_invoices)
+        previous_month_totals = get_total_revenue_vat_from_invoices(
+            previous_month_invoices
+        )
+        projected_values = get_projected_revenue_tax(
+            ytd_totals["revenue"], previous_month.month
+        )
 
         context["ytd_revenue"] = ytd_totals["revenue"]
-        context["ytd_costs"] = ytd_totals["vat"]
-        context["current_quarter_revenue"] = qtr_totals["revenue"]
-        context["current_quarter_vat"] = qtr_totals["vat"]
-        context["previous_quarter_revenue"] = p_qtr_totals["revenue"]
-        context["previous_quarter_vat"] = p_qtr_totals["vat"]
+        context["ytd_vat"] = ytd_totals["vat"]
+        context["ytd_tax"] = ytd_totals["tax"]
+        context["previous_month_revenue"] = previous_month_totals["revenue"]
+        context["previous_month_vat"] = previous_month_totals["vat"]
+        context["proj_revenue"] = projected_values["revenue"]
+        context["proj_tax"] = projected_values["tax"]
+        context["proj_payment"] = projected_values["payment"]
 
         # Get last 10 invoice for display in table
         context["invoice_list"] = Invoice.objects.filter(user=user).order_by(

@@ -17,40 +17,56 @@
       <div class="card-deck">
         <div class="card">
           <div class="card-body">
+            <h3 class="card-title">{{ previous_month_revenue|floatformat:"2" }}€</h3>
+            <h4 class="card-subtitle mb-2 text-muted">Prev. Month Revenue</h4>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-body">
+            <h3 class="card-title">{{ previous_month_vat|floatformat:"2" }}€</h3>
+            <h4 class="card-subtitle mb-2 text-muted">Prev. Month VAT</h4>
+          </div>
+        </div>
+      </div>
+      <br>
+      <div class="card-deck">
+        <div class="card">
+          <div class="card-body">
             <h3 class="card-title">{{ ytd_revenue|floatformat:"2" }}€</h3>
             <h4 class="card-subtitle mb-2 text-muted">YTD Revenue</h4>
           </div>
         </div>
         <div class="card">
           <div class="card-body">
-            <h3 class="card-title">{{ current_quarter_revenue|floatformat:"2" }}€</h3>
-            <h4 class="card-subtitle mb-2 text-muted">Current Quarter Revenue</h4>
+            <h3 class="card-title">{{ ytd_vat|floatformat:"2" }}€</h3>
+            <h4 class="card-subtitle mb-2 text-muted">YTD VAT</h4>
           </div>
         </div>
         <div class="card">
           <div class="card-body">
-            <h3 class="card-title">{{ previous_quarter_revenue|floatformat:"2" }}€</h3>
-            <h4 class="card-subtitle mb-2 text-muted">Previous Quarter Revenue</h4>
+            <h3 class="card-title">{{ ytd_tax|floatformat:"2" }}€</h3>
+            <h4 class="card-subtitle mb-2 text-muted">YTD Income Tax</h4>
           </div>
         </div>
       </div>
+      <br>
       <div class="card-deck">
         <div class="card">
           <div class="card-body">
-            <h3 class="card-title">-{{ ytd_costs|floatformat:"2" }}€</h3>
-            <h4 class="card-subtitle mb-2 text-muted">YTD Costs</h4>
+            <h3 class="card-title">{{ proj_revenue|floatformat:"2" }}€</h3>
+            <h4 class="card-subtitle mb-2 text-muted">Projected Revenue</h4>
           </div>
         </div>
         <div class="card">
           <div class="card-body">
-            <h3 class="card-title">-{{ current_quarter_vat|floatformat:"2" }}€</h3>
-            <h4 class="card-subtitle mb-2 text-muted">Current Quarter MwSt.</h4>
+            <h3 class="card-title">{{ proj_tax|floatformat:"2" }}€</h3>
+            <h4 class="card-subtitle mb-2 text-muted">Projected Tax</h4>
           </div>
         </div>
         <div class="card">
           <div class="card-body">
-            <h3 class="card-title">-{{ previous_quarter_vat|floatformat:"2" }}€</h3>
-            <h4 class="card-subtitle mb-2 text-muted">Previous Quarter MwSt.</h4>
+            <h3 class="card-title">{{ proj_payment|floatformat:"2" }}€</h3>
+            <h4 class="card-subtitle mb-2 text-muted">Projected Payment</h4>
           </div>
         </div>
       </div>

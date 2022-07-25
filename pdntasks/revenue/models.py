@@ -45,3 +45,12 @@ class Invoice(TimeStampedModel):
         invoices = Invoice.objects.filter(user=user, paid_date__year=year)
 
         return invoices
+
+    @staticmethod
+    def get_invoices_from_month(user, month, year):
+
+        invoices = Invoice.objects.filter(
+            user=user, paid_date__year=year, paid_date__month=month
+        )
+
+        return invoices

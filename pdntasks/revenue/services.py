@@ -68,6 +68,43 @@ def get_previous_quarter(quarter, year):
         return previous_quarter, year
 
 
+def calculate_income_tax(income):
+
+    if income < 9985:
+        income_tax = 0
+    elif income < 14927:
+        taxable_value = income - 9984
+        modifier = taxable_value / 10000
+        income_tax = (1008.7 * modifier + 1400) * modifier
+    elif income < 58597:
+        taxable_value = income - 14926
+        modifier = taxable_value / 10000
+        income_tax = (206.43 * modifier + 2397) * modifier + 938.24
+    elif income < 277826:
+        income_tax = (income * 0.42) - 9267.53
+    else:
+        income_tax = (income * 0.45) - 17602.28
+
+    return income_tax
+
+
+def get_projected_revenue_tax(
+    current_revenue, month, quarterly_prepayment=2700, projected_writeoffs=7000
+):
+    average_monthly_revenue = current_revenue / month
+    projected_revenue = average_monthly_revenue * 12
+    projected_taxable_revenue = projected_revenue - projected_writeoffs
+    projected_tax = calculate_income_tax(projected_taxable_revenue)
+    projected_payment = projected_tax - (quarterly_prepayment * 4)
+
+    projected_dict = {
+        "revenue": projected_revenue,
+        "tax": projected_tax,
+        "payment": projected_payment,
+    }
+    return projected_dict
+
+
 def get_total_revenue_vat_from_invoices(invoices):
     """
     Gets the total revenue and vat from an Invoice QuerySet
@@ -81,6 +118,8 @@ def get_total_revenue_vat_from_invoices(invoices):
             total_revenue += invoice.invoice_amount
             total_vat += invoice.vat_amount
 
-    total_dict = {"revenue": total_revenue, "vat": total_vat}
+    income_tax = calculate_income_tax(total_revenue)
+
+    total_dict = {"revenue": total_revenue, "vat": total_vat, "tax": income_tax}
 
     return total_dict
