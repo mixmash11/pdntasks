@@ -99,6 +99,7 @@ def get_projected_revenue_tax(
 
     projected_dict = {
         "revenue": projected_revenue,
+        "taxable_revenue": projected_taxable_revenue,
         "tax": projected_tax,
         "payment": projected_payment,
     }

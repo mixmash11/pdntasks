@@ -53,6 +53,7 @@ class RevenueDashboard(LoginRequiredMixin, TemplateView):
         context["previous_month_revenue"] = previous_month_totals["revenue"]
         context["previous_month_vat"] = previous_month_totals["vat"]
         context["proj_revenue"] = projected_values["revenue"]
+        context["proj_taxable_revenue"] = projected_values["taxable_revenue"]
         context["proj_tax"] = projected_values["tax"]
         context["proj_payment"] = projected_values["payment"]
 
