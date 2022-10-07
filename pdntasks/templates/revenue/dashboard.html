@@ -11,6 +11,8 @@
       <hr class="my-4">
       <a href="{% url 'revenue:invoice_add' %}" class="btn btn-primary" role="button">Add Invoice</a>
       <a href="{% url 'revenue:invoice_list' %}" class="btn btn-info" role="button">View Invoices</a>
+      <a href="{% url 'revenue:invoice_export' previous_month.year previous_month.month  %}" class="btn btn-secondary"
+         role="button">Download Invoices (Prev. Month)</a>
     </div>
     <div class="container border rounded p-4">
       <h2>Revenue Stats</h2>

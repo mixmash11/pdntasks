@@ -64,6 +64,7 @@ class RevenueDashboard(LoginRequiredMixin, TemplateView):
         context["proj_taxable_revenue"] = projected_values["taxable_revenue"]
         context["proj_tax"] = projected_values["tax"]
         context["proj_payment"] = projected_values["payment"]
+        context["previous_month"] = previous_month
 
         # Get last 10 invoice for display in table
         context["invoice_list"] = Invoice.objects.filter(user=user).order_by(
